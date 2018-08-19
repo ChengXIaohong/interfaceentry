@@ -70,12 +70,11 @@ public class MerchantServiceImpl implements MerchantService {
         }
 
         MerchantEntity merchantEntity = optional.get();
-
-        //todo : 完善提交到翼支付审核逻辑
+        //商户进件申请
         try {
             Boolean success = this.merchantInto(merchantEntity);
             if (success == null || !success) {
-                throw new RuntimeException("商户进件请求失败");
+                throw new RuntimeException("商户进件请求success 未成功");
             }
         } catch (Exception e) {
             logger.error("商户进件请求失败 merchantId:{}", merchantEntity.getId(), e);
@@ -86,51 +85,86 @@ public class MerchantServiceImpl implements MerchantService {
     private Boolean merchantInto(MerchantEntity merchantEntity) {
 
         TreeMap<String, String> params = new TreeMap<>();
+        String merchantName = merchantEntity.getMerchantName();// 商户名称  M
+        String businessScope = merchantEntity.getBusinessScope();// 营业范围  M
+        String businessTerm = merchantEntity.getBusinessTerm();//营业期限  M 格式：yyyy - MM - dd，营业期限为⻓长期时，填：2199 - 12 - 31
+        String provinceCode = merchantEntity.getProvinceCode();//省份编码  M 请⻅见《地区城市码.xlsx》
+        String cityCode = merchantEntity.getCityCode();// 城市编码  M 请⻅见《地区城市码.xlsx》
+        String businessAddress = merchantEntity.getBusinessAddress();// 营业地址  M
+        String mccCode = merchantEntity.getMccCode();//⾏行行业分类编码  M 请⻅见《⾏行行业类型码表.xlsx》
+        String contactPhone = merchantEntity.getContactPhone();// 联系⼈人⼿手机号  M
+        String identityCardUserName = merchantEntity.getIdentityCardUserName();// 身份证⽤用户姓名  M
+        String identityCardNo = merchantEntity.getIdentityCardNo();//身份证件号  M
+        String identityCardFrontPic = merchantEntity.getIdentityCardFrontPic();// 身份证正⾯面图⽚片  M
+        String identityCardReversePic = merchantEntity.getIdentityCardReversePic();//身份证反⾯面图⽚片  M
+        String busiLicenseNo = merchantEntity.getBusiLicenseNo();//营业执照号  M
+        String busiLicenseUserName = merchantEntity.getBusiLicenseUserName();//营业执照⽤用户姓名  M
+        String licenseType = merchantEntity.getLicenseType();//营业许可证类型  M businessLicense：营业执照，
+        String licensePic = merchantEntity.getLicensePic();// 营业许可证图⽚片  M
+        String storeInteriorPic = merchantEntity.getStoreInteriorPic();// 店铺内景照⽚  M
+        String storeSignBoardPic = merchantEntity.getStoreSignBoardPic();// 店铺招牌照片  M
+        String settleBankName = merchantEntity.getSettleBankName();// 结算银⾏行行名称  M 通过银⾏行行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
+        String settleBankNo = merchantEntity.getSettleBankNo();//结算银⾏行行编码  M 请填写空字符串串，例例如：””
+        String settleBankcardNo = merchantEntity.getSettleBankcardNo();//结算银⾏行行卡号  M
+        String settleBankcardUserName = merchantEntity.getSettleBankcardUserName();// 结算银⾏行行卡⽤用户姓名 M
+        String settleBankcardLineNumber = merchantEntity.getSettleBankcardLineNumb(); //银⾏行行卡联⾏行行号  M 通过银⾏行行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
+        String settleBankcardFinanceAreaCode = merchantEntity.getSettleBankcardFinanceAreaCode();//银⾏行行卡结算地区码  M 银⾏行行卡财务结算地区码，通过接⼝口⼀一查询获得
+        String settlePhoneNo = merchantEntity.getSettlePhoneNo();// 银⾏行行预留留⼿手机号  M
+        String merchantTxnRate = merchantEntity.getMerchantTxnRate();// 商户签约交易易费率  M 单位：%
+        String merchantTxnSettlePeriod = merchantEntity.getMerchantTxnSettlePeriod();// 商户交易易结算周期  M 填“1”
+
+        //todo:  没有直接数据 待完善
+        String merchantNameShort; //商户简称  M 接⼝口进件上传给微信⽀支付宝通道的商户简称
         String requestSystem;//请求系统  M 平台商在聚合平台申请的平台编码
         String requestSeqId; //请求流⽔水号  M 保证每次请求唯⼀一
         String platformMerchantNo;// 平台商商户号  M 平台商在商服开的商户号，作为代理理商与平台商下的商户进⾏行行绑定
         String merchantNo; //商户号  M 商户在平台商侧的商户号
-        String merchantName = merchantEntity.getMerchantName();// 商户名称  M
-        String merchantNameShort; //商户简称  M 接⼝口进件上传给微信⽀支付宝通道的商户简称
-        String businessScope = merchantEntity.getBusinessScope();// 营业范围  M
-        String businessTerm;//营业期限  M 格式：yyyy - MM - dd，营业期限为⻓长期时，填：2199 - 12 - 31
-        String provinceCode;//省份编码  M 请⻅见《地区城市码.xlsx》
-        String cityCode;// 城市编码  M 请⻅见《地区城市码.xlsx》
-        String businessAddress;// 营业地址  M
-        String mccCode;//⾏行行业分类编码  M 请⻅见《⾏行行业类型码表.xlsx》
-        String contactPhone;// 联系⼈人⼿手机号  M
-        String identityCardUserName;// 身份证⽤用户姓名  M
-        String identityCardNo;//身份证件号  M
-        String identityCardFrontPic;// 身份证正⾯面图⽚片  M
-        String identityCardReversePic;//身份证反⾯面图⽚片  M
-        String busiLicenseNo;//营业执照号  M
-        String busiLicenseUserName;//营业执照⽤用户姓名  M
-        String licenseType;//营业许可证类型  M businessLicense：营业执照，
-        String licensePic;// 营业许可证图⽚片  M
-        String storeInteriorPic;// 店铺内景照⽚片  M
-        String storeSignBoardPic;// 店铺招牌照⽚片  M
-        String settleBankName;// 结算银⾏行行名称  M 通过银⾏行行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
-        String settleBankNo;//结算银⾏行行编码  M 请填写空字符串串，例例如：””
-        String settleBankcardNo;//结算银⾏行行卡号  M
-        String settleBankcardUserName;// 结算银⾏行行卡⽤用户姓名 M
-        String settleBankcardLineNumber; //银⾏行行卡联⾏行行号  M 通过银⾏行行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
-        String settleBankcardFinanceAreaCode;//银⾏行行卡结算地区码  M 银⾏行行卡财务结算地区码，通过接⼝口⼀一查询获得
-        String settlePhoneNo;// 银⾏行行预留留⼿手机号  M
-        String merchantTxnRate;// 商户签约交易易费率  M 单位：%
-        String merchantTxnSettlePeriod;// 商户交易易结算周期  M 填“1”
         String agentMerchantCode;// 代理理商商户号  M 平台商在翼⽀支付代理理商平台开通的商户号
         String recommendNo;// 员⼯工账号  M 平台商在翼⽀支付代理理商平台为⾃自⼰己的员⼯工开通的员⼯工账号
-        String mac; //mac检验码  M 字符串串拼接顺序：
-
         String integrateLicense;//三证合⼀一照;
+        /*
+        mac检验码  M  字符串串拼接顺序：
+            requestSystem+requestSeqId+merchant
+            No+merchantName+merchantNameShor
+            t+businessScope+businessTerm+provinc
+            eCode+cityCode+businessAddress+mcc
+            Code+contactPhone+identityCardUserN
+            ame+identityCardNo+busiLicenseNo+bu
+            siLicenseUserName+licenseType+settle
+            BankName+settleBankNo+settleBankcar
+            dNo+settleBankcardUserName+settleBa
+            nkcardLineNumber+settleBankcardFinan
+            ceAreaCode+merchantTxnRate+mercha
+            ntTxnSettlePeriod+接口key
+         */
+        String mac = requestSystem
+                + requestSeqId
+                + merchantNo
+                + merchantName
+                + merchantNameShort
+                + businessScope + businessTerm
+                + provinceCode
+                + cityCode
+                + businessAddress
+                + mccCode
+                + contactPhone
+                + identityCardUserName
+                + identityCardNo + busiLicenseNo
+                + busiLicenseUserName
+                + licenseType
+                + settleBankName
+                + settleBankNo
+                + settleBankcardNo
+                + settleBankcardUserName
+                + settleBankcardLineNumber
+                + settleBankcardFinanceAreaCode
+                + merchantTxnRate
+                + merchantTxnSettlePeriod
+                + 接口key;
+
 
         Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("requestSystem", requestSystem);
-        paramsMap.put("requestSeqId", requestSeqId);
-        paramsMap.put("platformMerchantNo", platformMerchantNo);
-        paramsMap.put("merchantNo", merchantNo);
         paramsMap.put("merchantName", merchantName);
-        paramsMap.put("merchantNameShort", merchantNameShort);
         paramsMap.put("businessScope", businessScope);
         paramsMap.put("businessTerm", businessTerm);
         paramsMap.put("provinceCode", provinceCode);
@@ -157,10 +191,15 @@ public class MerchantServiceImpl implements MerchantService {
         paramsMap.put("settlePhoneNo", settlePhoneNo);
         paramsMap.put("merchantTxnRate", merchantTxnRate);
         paramsMap.put("merchantTxnSettlePeriod", merchantTxnSettlePeriod);
+
+        paramsMap.put("merchantNameShort", merchantNameShort);
         paramsMap.put("agentMerchantCode", agentMerchantCode);
         paramsMap.put("recommendNo", recommendNo);
         paramsMap.put("mac", mac);
-
+        paramsMap.put("requestSystem", requestSystem);
+        paramsMap.put("requestSeqId", requestSeqId);
+        paramsMap.put("platformMerchantNo", platformMerchantNo);
+        paramsMap.put("merchantNo", merchantNo);
         paramsMap.put("integrateLicense", integrateLicense);
 
         String data = JSON.toJSONString(paramsMap);
