@@ -1,6 +1,7 @@
 package com.interfaceentry.interfaceentry;
 
 import com.interfaceentry.interfaceentry.tools.OkHttpUtil;
+import com.interfaceentry.interfaceentry.tools.OnLineExecutorService;
 import lombok.extern.java.Log;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Log
 public class InterfaceentryApplicationTests {
 
- //   @Test
+    @Test
     public void contextLoads() {
        String data = OkHttpUtil.get("https://www.baidu.com");
        log.info(data);
@@ -33,6 +34,11 @@ public class InterfaceentryApplicationTests {
                 .newSingleThreadScheduledExecutor();
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
         service.scheduleAtFixedRate(runnable, 10, 1, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void timerTest() {
+        OnLineExecutorService.get("1","2");
     }
 
 }

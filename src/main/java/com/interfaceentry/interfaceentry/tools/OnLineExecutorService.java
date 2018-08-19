@@ -1,0 +1,70 @@
+package com.interfaceentry.interfaceentry.tools;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.interfaceentry.interfaceentry.entity.MerchantEntity;
+import com.interfaceentry.interfaceentry.entity.RequestParamsEntity;
+import com.interfaceentry.interfaceentry.service.model.AnswerModel;
+import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
+/**
+ * 在线轮询
+ *
+ * @author chengxiaohong coax@outlook.it
+ * @create 2018-08-19 21:37
+ **/
+public class OnLineExecutorService {
+    private static Map<String, Timer> timerContainer = new HashMap<>();
+
+    public static void get(String requestSeqId, String merchantNo) {
+        Boolean flag = true;
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                String result = OnLineExecutorService.getSubmitResult(requestSeqId, merchantNo);
+                //判断结果
+                if (StringUtils.isEmpty(result)) {
+                    JSONObject answerModel = JSON.parseObject(result);
+                    //判断结果
+
+                    if (answerModel.get("errorMsg").equals("成功")) {
+                        //todo : 此处回写成功数据
+                    } else {
+                        //todo : 此处回写失败数据
+                    }
+
+                } else {
+                    timerContainer.get(requestSeqId).cancel();
+                    timerContainer.remove(requestSeqId);
+                }
+            }
+        };
+
+        long delay = 0;
+        long intevalPeriod = 5 * 60 * 1000;
+        timer.scheduleAtFixedRate(task, delay, intevalPeriod);
+        timerContainer.put("requestSeqId", timer);
+    }
+
+    //fixme:参数不完整
+
+    /**
+     * 请求申请结果
+     *
+     * @param requestSeqId
+     * @param merchantNo
+     * @return
+     */
+    private static String getSubmitResult(String requestSeqId, String merchantNo) {
+        RequestParamsEntity requestParamsEntity = RequestParamsEntity.builder().requestSeqId(requestSeqId).merchantNo(merchantNo).mac(AppMD5Util.getMD5(requestSeqId +
+                merchantNo)).build();
+        String jsonStr = JSON.toJSONString(requestParamsEntity);
+        return OkHttpUtil.post("{API_Url}/mapi/o2o/personalstore/platformMerchantService/querySignAggregateRusult", jsonStr, OkHttpUtil.APPLICATION_JSON);
+    }
+}

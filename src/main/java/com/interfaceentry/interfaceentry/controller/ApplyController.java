@@ -3,6 +3,7 @@ package com.interfaceentry.interfaceentry.controller;
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
 import com.interfaceentry.interfaceentry.tools.Constants;
+import com.interfaceentry.interfaceentry.tools.OnLineExecutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +57,7 @@ public class ApplyController {
      */
     @RequestMapping("/getApply")
     public ModelAndView getApply(String status) {
+        OnLineExecutorService.get("222" , "333");
         ModelAndView modelAndView = new ModelAndView("getApply");
         List<MerchantEntity> merchantList = merchantService.getMerchantByStatus(status);
         modelAndView.addObject("merchantList", merchantList);

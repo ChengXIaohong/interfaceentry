@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
@@ -137,7 +136,7 @@ public class MerchantServiceImpl implements MerchantService {
             ceAreaCode+merchantTxnRate+mercha
             ntTxnSettlePeriod+接口key
          */
-        String mac = requestSystem
+        /*String mac = requestSystem
                 + requestSeqId
                 + merchantNo
                 + merchantName
@@ -160,7 +159,7 @@ public class MerchantServiceImpl implements MerchantService {
                 + settleBankcardFinanceAreaCode
                 + merchantTxnRate
                 + merchantTxnSettlePeriod
-                + 接口key;
+                + 接口key;*/
 
 
         Map<String, Object> paramsMap = new HashMap<>();
@@ -192,7 +191,7 @@ public class MerchantServiceImpl implements MerchantService {
         paramsMap.put("merchantTxnRate", merchantTxnRate);
         paramsMap.put("merchantTxnSettlePeriod", merchantTxnSettlePeriod);
 
-        paramsMap.put("merchantNameShort", merchantNameShort);
+  /*      paramsMap.put("merchantNameShort", merchantNameShort);
         paramsMap.put("agentMerchantCode", agentMerchantCode);
         paramsMap.put("recommendNo", recommendNo);
         paramsMap.put("mac", mac);
@@ -200,7 +199,7 @@ public class MerchantServiceImpl implements MerchantService {
         paramsMap.put("requestSeqId", requestSeqId);
         paramsMap.put("platformMerchantNo", platformMerchantNo);
         paramsMap.put("merchantNo", merchantNo);
-        paramsMap.put("integrateLicense", integrateLicense);
+        paramsMap.put("integrateLicense", integrateLicense);*/
 
         String data = JSON.toJSONString(paramsMap);
         data = OkHttpUtil.post(MerchantServiceImpl.INTO_URL, data, OkHttpUtil.APPLICATION_JSON);

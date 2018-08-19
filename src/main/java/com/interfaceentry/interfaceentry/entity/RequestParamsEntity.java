@@ -18,6 +18,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "request_record")
+@Builder
 @NoArgsConstructor
 public class RequestParamsEntity extends BaseEntity implements Serializable {
 
@@ -56,6 +57,11 @@ public class RequestParamsEntity extends BaseEntity implements Serializable {
     private String bankCode;
 
     //=============根据银行名称查询银行信息 参数 END
+
+    /**
+     * 查询申请结果时用
+     */
+    private String merchantNo;
 
     //=============申请平台商商户进件 START
     /**
