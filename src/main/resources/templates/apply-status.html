@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提交状态</title>
+</head>
+<body>
+    <hr/>
+        <h3 th:if = "${merchant.id} == null">提交出现异常，请稍后再试</h3>
+        <h3 th:if = "${merchant.id} != null">提交成功，等待审核</h3>
+    <hr/>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <link th:href="@{https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <title>申请列表</title>
+</head>
+<body>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">申请列表</h3>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item" th:each="merchant : ${merchantList}">
+                <span th:text="${merchant.id}"></span>
+                <span th:text="${merchant.merchantName}"></span>
+                <span th:text="${merchant.submissionStatus}"></span>
+                <span th:text="${merchant.createAt}"></span>
+                <label>
+                    <a class="btn btn-primary" th:onclick="'pass(\''+${merchant.id}+'\');'" href="javascript:void(0)"
+                       type="pass">通过审核</a>
+                    <a class="btn btn-danger" th:onclick="'rej(\''+${merchant.id}+'\');'" href="javascript:void(0)"
+                       type="rej">不通过审核</a>
+                    <a class="btn btn-success" th:onclick="'submition(\''+${merchant.id}+'\');'"
+                       href="javascript:void(0)" type="submit">提交翼支付审核</a>
+                </label>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+<script>
+    //通过
+    function pass(id) {
+        statusModify(id, "JBGSH_PASS")
+    }
+
+    //不通过
+    function rej(id) {
+        statusModify(id, "JBGSH_REJ")
+    }
+
+    //提交翼支付审核
+    function submition(id) {
+        statusModify(id, "YZFSH_ING")
+    }
+
+    function statusModify(id, type) {
+        if ("" == id || null == id) {
+            console.log("非法ID");
+            return;
+        }
+
+        $.get("updateStatus", {id: id, submissionStatus: type}, function (result) {
+           if ("success" == result) {
+               location.reload();
+           }
+        })
+
+    }
+</script>
+</html>
