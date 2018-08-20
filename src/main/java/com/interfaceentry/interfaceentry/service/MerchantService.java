@@ -1,6 +1,7 @@
 package com.interfaceentry.interfaceentry.service;
 
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
+import com.interfaceentry.interfaceentry.service.model.SettleBankInfo;
 
 import java.util.List;
 
@@ -39,4 +40,8 @@ public interface MerchantService {
      * @param id
      */
     void submiToYZHSH(Long id);
+
+    List<SettleBankInfo> getSettleBankInfos(String bankName, String bankCode);
+
+
 }

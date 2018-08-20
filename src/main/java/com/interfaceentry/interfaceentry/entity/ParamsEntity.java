@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * 请求携带的数据
@@ -117,4 +118,9 @@ public class ParamsEntity extends BaseEntity implements Serializable {
      * 接口返回数据：应答数据
      */
     private String responseResult;
+
+
+    private String requestUri;
+
+
 }
