@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.interfaceentry.interfaceentry.dao.MerchantRespository;
 import com.interfaceentry.interfaceentry.dao.RequestParamsRespository;
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
-import com.interfaceentry.interfaceentry.entity.RequestParamsEntity;
+import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
 import com.interfaceentry.interfaceentry.tools.Constants;
 import com.interfaceentry.interfaceentry.tools.OkHttpUtil;
@@ -14,7 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * 商户service实现
@@ -68,29 +71,33 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public void submiToYZHSH(Long id) {
         Optional<MerchantEntity> optional = merchantRespository.findById(id);
-        RequestParamsEntity requestParamsEntity = requestParamsRespository.findByXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx();
 
         if (!optional.isPresent()) {
             throw new RuntimeException("非法商户ID");
         }
+        MerchantEntity merchantEntity = optional.get();
+
+        /*ParamsEntity requestParamsEntity = requestParamsRespository.findByXxxxx(XXXXX);
+        requestParamsEntity.setMerchantEntity(merchantEntity);
         if (requestParamsEntity == null) {
             throw new RuntimeException("非法商户");
         }
 
-        MerchantEntity merchantEntity = optional.get();
         //商户进件申请
         try {
-            Boolean success = this.merchantInto(merchantEntity, requestParamsEntity);
+            Boolean success = this.merchantInto(requestParamsEntity);
             if (success == null || !success) {
                 throw new RuntimeException("商户进件请求success 未成功");
             }
         } catch (Exception e) {
             logger.error("商户进件请求失败 merchantId:{}", merchantEntity.getId(), e);
-        }
+        }*/
 
     }
 
-    private Boolean merchantInto(MerchantEntity merchantEntity, RequestParamsEntity requestParamsEntity) {
+    private Boolean merchantInto(ParamsEntity requestParamsEntity) {
+
+        MerchantEntity merchantEntity = requestParamsEntity.getMerchantEntity();
 
         String merchantName = merchantEntity.getMerchantName();// 商户名称  M
         String businessScope = merchantEntity.getBusinessScope();// 营业范围  M
@@ -121,7 +128,8 @@ public class MerchantServiceImpl implements MerchantService {
         String merchantTxnSettlePeriod = merchantEntity.getMerchantTxnSettlePeriod();// 商户交易易结算周期  M 填“1”
         String integrateLicense = merchantEntity.getLicenseType();//三证合⼀一照;
 
-        String requestSystem = requestParamsEntity.getRequestSystem();//请求系统  M 平台商在聚合平台申请的平台编码
+        String requestSystem = requestParamsEntity.getRequestSystem();//请求系统  M 平台商在聚合平台申请的平台编码 写死1
+
         String requestSeqId = requestParamsEntity.getRequestSeqId(); //请求流⽔水号  M 保证每次请求唯⼀一
         String platformMerchantNo = requestParamsEntity.getPlatformMerchantNo();// 平台商商户号  M 平台商在商服开的商户号，作为代理理商与平台商下的商户进⾏行行绑定
         String agentMerchantCode = requestParamsEntity.getAgentMerchantCode();// 代理理商商户号  M 平台商在翼⽀支付代理理商平台开通的商户号
@@ -129,7 +137,8 @@ public class MerchantServiceImpl implements MerchantService {
 
         //todo:  没有直接数据 待完善
         String merchantNameShort; //商户简称  M 接口进件上传给微信⽀支付宝通道的商户简称
-        String merchantNo; //商户号  M 商户在平台商侧的商户号
+        String merchantNo = String.valueOf(merchantEntity.getId()); //商户号  M 商户在平台商侧的商户号
+
         /*
         mac检验码  M  字符串串拼接顺序：
             requestSystem+requestSeqId+merchant
@@ -145,7 +154,7 @@ public class MerchantServiceImpl implements MerchantService {
             ceAreaCode+merchantTxnRate+mercha
             ntTxnSettlePeriod+接口key
          */
-        /*String mac = requestSystem
+       /* String mac = requestSystem
                 + requestSeqId
                 + merchantNo
                 + merchantName
@@ -168,8 +177,8 @@ public class MerchantServiceImpl implements MerchantService {
                 + settleBankcardFinanceAreaCode
                 + merchantTxnRate
                 + merchantTxnSettlePeriod
-                + 接口key;*/
-
+                + 接口key;
+*/
 
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("merchantName", merchantName);

@@ -1,6 +1,9 @@
 package com.interfaceentry.interfaceentry.entity;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,9 +18,9 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "request_record")
-@Builder()
-@Getter
-public class RequestParamsEntity extends BaseEntity implements Serializable {
+@Builder
+@NoArgsConstructor
+public class ParamsEntity extends BaseEntity implements Serializable {
 
     //=============请求基础参数 参数 START
     /**
@@ -72,8 +75,8 @@ public class RequestParamsEntity extends BaseEntity implements Serializable {
      * 商户号
      * 商户在平台商侧的商户号
      */
-    @ManyToOne(cascade= CascadeType.ALL,optional = true)
-    @JoinColumn(name = "merchant_id",nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL, optional = true)
+    @JoinColumn(name = "merchant_id", nullable = false)
     private MerchantEntity merchantEntity;
 
 
