@@ -1,6 +1,6 @@
 package com.interfaceentry.interfaceentry.service;
 
-import com.interfaceentry.interfaceentry.entity.RequestParamsEntity;
+import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 
 /**
  * 请求对象service
@@ -15,5 +15,5 @@ public interface RequestParamsService {
      * @param requestParamsEntity
      * @return
      */
-    RequestParamsEntity saveOrUpDate(RequestParamsEntity requestParamsEntity);
+    ParamsEntity saveOrUpDate(ParamsEntity requestParamsEntity);
 }

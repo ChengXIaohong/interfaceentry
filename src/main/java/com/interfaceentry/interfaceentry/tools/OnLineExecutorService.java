@@ -3,7 +3,7 @@ package com.interfaceentry.interfaceentry.tools;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
-import com.interfaceentry.interfaceentry.entity.RequestParamsEntity;
+import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.model.AnswerModel;
 import org.springframework.util.StringUtils;
 
@@ -64,7 +64,7 @@ public class OnLineExecutorService {
      * @return
      */
     private static String getSubmitResult(String requestSeqId, String merchantNo) {
-        RequestParamsEntity requestParamsEntity = RequestParamsEntity.builder().requestSeqId(requestSeqId).merchantNo(merchantNo).mac(AppMD5Util.getMD5(requestSeqId +
+        ParamsEntity requestParamsEntity = ParamsEntity.builder().requestSeqId(requestSeqId).merchantNo(merchantNo).mac(AppMD5Util.getMD5(requestSeqId +
                 merchantNo)).build();
         String jsonStr = JSON.toJSONString(requestParamsEntity);
         //return OkHttpUtil.post("{API_Url}/mapi/o2o/personalstore/platformMerchantService/querySignAggregateRusult", jsonStr, OkHttpUtil.APPLICATION_JSON);

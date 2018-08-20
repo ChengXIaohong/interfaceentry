@@ -19,7 +19,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "request_record")
 @Builder
-@NoArgsConstructor
 public class ParamsEntity extends BaseEntity implements Serializable {
 
     //=============请求基础参数 参数 START

@@ -1,7 +1,7 @@
 package com.interfaceentry.interfaceentry.service.impl;
 
 import com.interfaceentry.interfaceentry.dao.RequestParamsRespository;
-import com.interfaceentry.interfaceentry.entity.RequestParamsEntity;
+import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.RequestParamsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class RequestParamsServiceImpl implements RequestParamsService {
     @Autowired
     private RequestParamsRespository requestParamsRespository;
     @Override
-    public RequestParamsEntity saveOrUpDate(RequestParamsEntity requestParamsEntity) {
+    public ParamsEntity saveOrUpDate(ParamsEntity requestParamsEntity) {
         return requestParamsRespository.save(requestParamsEntity);
     }
 }

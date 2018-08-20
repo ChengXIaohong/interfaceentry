@@ -1,6 +1,6 @@
 package com.interfaceentry.interfaceentry.dao;
 
-import com.interfaceentry.interfaceentry.entity.RequestParamsEntity;
+import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -9,5 +9,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author chengxiaohong coax@outlook.it
  * @create 2018-08-17 14:43
  **/
-public interface RequestParamsRespository extends CrudRepository<RequestParamsEntity, Long> {
+public interface RequestParamsRespository extends CrudRepository<ParamsEntity, Long> {
 }
