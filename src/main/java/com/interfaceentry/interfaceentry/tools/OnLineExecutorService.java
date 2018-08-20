@@ -31,11 +31,13 @@ public class OnLineExecutorService {
                 //判断结果
                 if (StringUtils.isEmpty(result)) {
                     JSONObject answerModel = JSON.parseObject(result);
-                    //判断结果
+
 
                     if (answerModel.get("errorMsg").equals("成功")) {
                         //todo : 此处回写成功数据
+                        System.out.println(123);
                     } else {
+                        System.out.println(456);
                         //todo : 此处回写失败数据
                     }
 
@@ -65,6 +67,8 @@ public class OnLineExecutorService {
         RequestParamsEntity requestParamsEntity = RequestParamsEntity.builder().requestSeqId(requestSeqId).merchantNo(merchantNo).mac(AppMD5Util.getMD5(requestSeqId +
                 merchantNo)).build();
         String jsonStr = JSON.toJSONString(requestParamsEntity);
-        return OkHttpUtil.post("{API_Url}/mapi/o2o/personalstore/platformMerchantService/querySignAggregateRusult", jsonStr, OkHttpUtil.APPLICATION_JSON);
+        //return OkHttpUtil.post("{API_Url}/mapi/o2o/personalstore/platformMerchantService/querySignAggregateRusult", jsonStr, OkHttpUtil.APPLICATION_JSON);
+        return "{\"errorCode\":\"000000\",\"errorMsg\":\"成功\",\"result\":\n" +
+                "{\"bestpayMctNo\":null,\"signStatus\":\"SIGNING\",\"signStatusDesc\":\"签约中\"},\"success\":true}";
     }
 }

@@ -1,9 +1,6 @@
 package com.interfaceentry.interfaceentry.entity;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,8 +15,8 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "request_record")
-@Builder
-@NoArgsConstructor
+@Builder()
+@Getter
 public class RequestParamsEntity extends BaseEntity implements Serializable {
 
     //=============请求基础参数 参数 START
