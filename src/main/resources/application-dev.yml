@@ -35,3 +35,10 @@ spring:
     prefix: classpath:/template/
 server:
   port: 8089
+kdypay:
+  config:
+    requestSystem: kdypay
+    key: w685tz245BK5Wiern0E8pH3Ou0H0FlQ7
+    agentMerchantCode: 3178002068870884
+    recommendNo: 17621390110
+    macc: 5399

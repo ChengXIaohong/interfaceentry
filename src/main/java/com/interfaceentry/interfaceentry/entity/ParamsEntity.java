@@ -1,9 +1,9 @@
 package com.interfaceentry.interfaceentry.entity;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.interfaceentry.interfaceentry.service.model.DynamicParams;
+import com.interfaceentry.interfaceentry.tools.Constants;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,13 +19,19 @@ import java.io.Serializable;
 @Entity
 @Table(name = "request_record")
 @Builder
+@AllArgsConstructor
 public class ParamsEntity extends BaseEntity implements Serializable {
-
     //=============请求基础参数 参数 START
     /**
      * 请求系统:平台商在聚合平台申请的平台编码
      */
     private String requestSystem;
+
+    /**
+     * 交易key
+     */
+    @Column(name = "key_", nullable = false)
+    private String key;
 
     /**
      * 请求流水号：保证每次请求唯⼀

@@ -1,26 +1,17 @@
 package com.interfaceentry.interfaceentry.tools;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
 /**
  * 常量类
  *
  * @author chengxiaohong coax@outlook.it
  * @create 2018-07-03 10:52
  **/
+
 public class Constants {
-    /**
-     * 错误页面
-     */
-    public static final String ERROR_PAGE = "errorPage";
-
-    /**
-     * 成功页面
-     */
-    public static final String SUCCESS_PAGE = "success";
-
-    /**
-     * 页面名称
-     */
-    public static final String PAGE_TITLE = "title";
 
     /**
      * 页面注入主要错误信息key

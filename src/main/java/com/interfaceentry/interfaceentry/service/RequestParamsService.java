@@ -16,4 +16,10 @@ public interface RequestParamsService {
      * @return
      */
     ParamsEntity saveOrUpDate(ParamsEntity requestParamsEntity);
+
+    /**
+     * 得到一个代参数实例
+     * @return
+     */
+    ParamsEntity getParamsInstance();
 }

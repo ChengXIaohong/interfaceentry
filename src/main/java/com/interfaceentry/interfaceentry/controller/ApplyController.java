@@ -1,7 +1,9 @@
 package com.interfaceentry.interfaceentry.controller;
 
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
+import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
+import com.interfaceentry.interfaceentry.service.RequestParamsService;
 import com.interfaceentry.interfaceentry.tools.Constants;
 import com.interfaceentry.interfaceentry.tools.OnLineExecutorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class ApplyController {
 
     @Autowired
     private MerchantService merchantService;
+
+    @Autowired
+    private RequestParamsService requestParamsService;
 
     /**
      * 到申请支付页面
@@ -57,6 +62,10 @@ public class ApplyController {
      */
     @RequestMapping("/getApply")
     public ModelAndView getApply(String status) {
+
+        ParamsEntity p = requestParamsService.getParamsInstance();
+        System.out.println(p.getRequestSystem());
+
         OnLineExecutorService.get("132" , "456");
         ModelAndView modelAndView = new ModelAndView("getApply");
         List<MerchantEntity> merchantList = merchantService.getMerchantByStatus(status);

@@ -1,10 +1,12 @@
 package com.interfaceentry.interfaceentry;
 
+import com.interfaceentry.interfaceentry.service.model.DynamicParams;
 import com.interfaceentry.interfaceentry.tools.OkHttpUtil;
 import com.interfaceentry.interfaceentry.tools.OnLineExecutorService;
 import lombok.extern.java.Log;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -40,5 +42,10 @@ public class InterfaceentryApplicationTests {
     public void timerTest() {
         OnLineExecutorService.get("1","2");
     }
-
+    @Test
+    public void ymlParmas(){
+        log.info(d.getAgentMerchantCode());
+    }
+    @Autowired
+    private DynamicParams d;
 }
