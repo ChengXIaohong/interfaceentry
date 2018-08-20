@@ -10,6 +10,7 @@ import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
 import com.interfaceentry.interfaceentry.service.RequestParamsService;
 import com.interfaceentry.interfaceentry.service.model.SettleBankInfo;
+import com.interfaceentry.interfaceentry.tools.AppMD5Util;
 import com.interfaceentry.interfaceentry.tools.Constants;
 import com.interfaceentry.interfaceentry.tools.OkHttpUtil;
 import com.interfaceentry.interfaceentry.tools.OnLineExecutorService;
@@ -17,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import sun.security.provider.MD5;
 
 import java.util.*;
 
@@ -32,7 +35,7 @@ public class MerchantServiceImpl implements MerchantService {
     //申请平台商商户进件
     private static String INTO_URL = "/mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
     //申请平台商商户进件
-    private static String GET_BANK_INFOS = "/mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
+    private static String GET_BANK_INFOS = "/mapi/o2o/personalstore/platformMerchantService/getSettleBankInfos";
 
 
     @Autowired
@@ -112,24 +115,32 @@ public class MerchantServiceImpl implements MerchantService {
         String requestSystem = requestParamsEntity.getRequestSystem();//请求系统  M 平台商在聚合平台申请的平台编码
         String requestSeqId = requestParamsEntity.getRequestSeqId();//请求流⽔水号  M 保证每次请求唯⼀
         String mac = requestSystem + requestSeqId + bankName + requestParamsEntity.getKey();// mac检验码  M 字符串串拼接顺序：requestSystem + requestSeqId + bankName + 接⼝key
-
+        mac = AppMD5Util.MD5(mac);
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("requestSystem", requestSystem);
         paramsMap.put("requestSeqId", requestSeqId);
         paramsMap.put("bankName", bankName);//银⾏名称  M 例例如：“浦东”
         paramsMap.put("bankCode", bankCode);// 银⾏行行编码  M 例例如：中国农业银⾏行行 ABC、中国银⾏行行 BOC
         paramsMap.put("mac", mac);
-
-        String data = JSON.toJSONString(paramsMap);
-        data = OkHttpUtil.post(requestParamsEntity.getRequestUri() + MerchantServiceImpl.GET_BANK_INFOS, data, OkHttpUtil.APPLICATION_JSON);
-        JSONObject obj = JSONObject.parseObject(data);
-        Boolean success = (Boolean) obj.get("success");
-        if (success == null || !success) {
+        try {
+            String data = JSON.toJSONString(paramsMap);
+            data = OkHttpUtil.post(requestParamsEntity.getRequestUri() + MerchantServiceImpl.GET_BANK_INFOS, data, OkHttpUtil.APPLICATION_JSON);
+            if (StringUtils.isEmpty(data)) {
+                return Collections.EMPTY_LIST;
+            }
+            JSONObject obj = JSONObject.parseObject(data);
+            Boolean success = (Boolean) obj.get("success");
+            if (success == null || !success) {
+                return Collections.EMPTY_LIST;
+            }
+            JSONArray result = obj.getJSONArray("result");
+            List<SettleBankInfo> settleBankInfos = JSONArray.parseArray(result.toJSONString(), SettleBankInfo.class);
+            return settleBankInfos;
+        } catch (Exception e) {
+            logger.error("银行查询错误 paramsMap:{}", paramsMap.toString(), e);
             return Collections.EMPTY_LIST;
         }
-        JSONArray result = obj.getJSONArray("result");
-        List<SettleBankInfo> settleBankInfos = JSONArray.parseArray(result.toJSONString(), SettleBankInfo.class);
-        return settleBankInfos;
+
     }
 
     private Boolean merchantInto(ParamsEntity requestParamsEntity) {
@@ -213,7 +224,7 @@ public class MerchantServiceImpl implements MerchantService {
                 + merchantTxnRate
                 + merchantTxnSettlePeriod
                 + requestParamsEntity.getKey();
-
+        mac = AppMD5Util.MD5(mac);
 
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("merchantName", merchantName);

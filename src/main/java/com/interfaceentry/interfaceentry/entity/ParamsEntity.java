@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * 请求携带的数据

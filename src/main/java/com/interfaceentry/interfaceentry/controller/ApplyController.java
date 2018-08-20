@@ -93,6 +93,7 @@ public class ApplyController {
      * 根据银行名称查询银行信息
      */
     @RequestMapping("/getSettleBankInfos")
+    @ResponseBody
     public List<SettleBankInfo> getSettleBankInfos(String bankName, String bankCode) {
         return merchantService.getSettleBankInfos(bankName, bankCode);
     }

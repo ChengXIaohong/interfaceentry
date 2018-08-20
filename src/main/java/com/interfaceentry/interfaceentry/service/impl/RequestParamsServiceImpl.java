@@ -7,6 +7,8 @@ import com.interfaceentry.interfaceentry.service.model.DynamicParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 /**
  * 请求对象service实现
  *
@@ -29,7 +31,7 @@ public class RequestParamsServiceImpl implements RequestParamsService {
 
     @Override
     public ParamsEntity getParamsInstance() {
-        ParamsEntity p = ParamsEntity.builder().key(dynamicParams.getKey()).requestSystem(dynamicParams.getRequestSystem()).agentMerchantCode(dynamicParams.getAgentMerchantCode()).recommendNo(dynamicParams.getRecommendNo()).requestUri(dynamicParams.getRequestUri()).build();
+        ParamsEntity p = ParamsEntity.builder().key(dynamicParams.getKey()).requestSystem(dynamicParams.getRequestSystem()).agentMerchantCode(dynamicParams.getAgentMerchantCode()).recommendNo(dynamicParams.getRecommendNo()).requestSeqId(UUID.randomUUID().toString()).requestUri(dynamicParams.getRequestUri()).build();
         return p;
     }
 }
