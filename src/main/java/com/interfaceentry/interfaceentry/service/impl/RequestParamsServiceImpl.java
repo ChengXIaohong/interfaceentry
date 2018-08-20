@@ -37,7 +37,7 @@ public class RequestParamsServiceImpl implements RequestParamsService {
                 .recommendNo(dynamicParams.getRecommendNo())
                 .requestSeqId(UUID.randomUUID().toString())
                 .requestUri(dynamicParams.getRequestUri())
-                //.platformMerchantNo(dynamicParams.getRecommendNo())
+                .platformMerchantNo(dynamicParams.getPlatformMerchantNo())
                 .build();
         return p;
     }

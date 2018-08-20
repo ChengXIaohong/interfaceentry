@@ -268,6 +268,9 @@ public class MerchantServiceImpl implements MerchantService {
 
         String data = JSON.toJSONString(paramsMap);
         data = OkHttpUtil.post(requestParamsEntity.getRequestUri() + MerchantServiceImpl.INTO_URL, data, OkHttpUtil.APPLICATION_JSON);
+        if (StringUtils.isEmpty(data)) {
+            return Boolean.FALSE;
+        }
         JSONObject obj = JSONObject.parseObject(data);
         return (Boolean) obj.get("success");
     }
