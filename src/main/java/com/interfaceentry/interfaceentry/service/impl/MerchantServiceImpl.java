@@ -99,6 +99,7 @@ public class MerchantServiceImpl implements MerchantService {
             }
         } catch (Exception e) {
             logger.error("商户进件请求失败 merchantId:{}", merchantEntity.getId(), e);
+            throw e;
         }
         //签约
         try {

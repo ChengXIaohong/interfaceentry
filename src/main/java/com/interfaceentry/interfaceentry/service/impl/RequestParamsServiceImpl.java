@@ -31,7 +31,14 @@ public class RequestParamsServiceImpl implements RequestParamsService {
 
     @Override
     public ParamsEntity getParamsInstance() {
-        ParamsEntity p = ParamsEntity.builder().key(dynamicParams.getKey()).requestSystem(dynamicParams.getRequestSystem()).agentMerchantCode(dynamicParams.getAgentMerchantCode()).recommendNo(dynamicParams.getRecommendNo()).requestSeqId(UUID.randomUUID().toString()).requestUri(dynamicParams.getRequestUri()).build();
+        ParamsEntity p = ParamsEntity.builder().key(dynamicParams.getKey())
+                .requestSystem(dynamicParams.getRequestSystem())
+                .agentMerchantCode(dynamicParams.getAgentMerchantCode())
+                .recommendNo(dynamicParams.getRecommendNo())
+                .requestSeqId(UUID.randomUUID().toString())
+                .requestUri(dynamicParams.getRequestUri())
+                //.platformMerchantNo(dynamicParams.getRecommendNo())
+                .build();
         return p;
     }
 }
