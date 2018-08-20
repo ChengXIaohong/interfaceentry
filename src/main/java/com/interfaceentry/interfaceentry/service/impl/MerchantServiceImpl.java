@@ -30,9 +30,9 @@ import java.util.*;
 public class MerchantServiceImpl implements MerchantService {
     private Logger logger = LoggerFactory.getLogger(MerchantServiceImpl.class);
     //申请平台商商户进件
-    private static String INTO_URL = "{API_Url}/mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
+    private static String INTO_URL = "/mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
     //申请平台商商户进件
-    private static String GET_BANK_INFOS = "{API_Url}/mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
+    private static String GET_BANK_INFOS = "/mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
 
 
     @Autowired
@@ -121,7 +121,7 @@ public class MerchantServiceImpl implements MerchantService {
         paramsMap.put("mac", mac);
 
         String data = JSON.toJSONString(paramsMap);
-        data = OkHttpUtil.post(MerchantServiceImpl.GET_BANK_INFOS, data, OkHttpUtil.APPLICATION_JSON);
+        data = OkHttpUtil.post(requestParamsEntity.getRequestUri() + MerchantServiceImpl.GET_BANK_INFOS, data, OkHttpUtil.APPLICATION_JSON);
         JSONObject obj = JSONObject.parseObject(data);
         Boolean success = (Boolean) obj.get("success");
         if (success == null || !success) {
@@ -255,7 +255,7 @@ public class MerchantServiceImpl implements MerchantService {
         paramsMap.put("integrateLicense", integrateLicense);
 
         String data = JSON.toJSONString(paramsMap);
-        data = OkHttpUtil.post(MerchantServiceImpl.INTO_URL, data, OkHttpUtil.APPLICATION_JSON);
+        data = OkHttpUtil.post(requestParamsEntity.getRequestUri() + MerchantServiceImpl.INTO_URL, data, OkHttpUtil.APPLICATION_JSON);
         JSONObject obj = JSONObject.parseObject(data);
         return (Boolean) obj.get("success");
     }

@@ -117,4 +117,9 @@ public class ParamsEntity extends BaseEntity implements Serializable {
      * 接口返回数据：应答数据
      */
     private String responseResult;
+
+
+    private String requestUri;
+
+
 }
