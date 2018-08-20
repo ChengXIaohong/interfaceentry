@@ -3,7 +3,9 @@ package com.interfaceentry.interfaceentry.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.interfaceentry.interfaceentry.dao.MerchantRespository;
+import com.interfaceentry.interfaceentry.dao.RequestParamsRespository;
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
+import com.interfaceentry.interfaceentry.entity.RequestParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
 import com.interfaceentry.interfaceentry.tools.Constants;
 import com.interfaceentry.interfaceentry.tools.OkHttpUtil;
@@ -29,6 +31,8 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Autowired
     private MerchantRespository merchantRespository;
+    @Autowired
+    private RequestParamsRespository requestParamsRespository;
 
     @Override
     public MerchantEntity saveOrUpdate(MerchantEntity merchantEntity) {
@@ -64,14 +68,19 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public void submiToYZHSH(Long id) {
         Optional<MerchantEntity> optional = merchantRespository.findById(id);
+        RequestParamsEntity requestParamsEntity = requestParamsRespository.findByXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx();
+
         if (!optional.isPresent()) {
             throw new RuntimeException("非法商户ID");
+        }
+        if (requestParamsEntity == null) {
+            throw new RuntimeException("非法商户");
         }
 
         MerchantEntity merchantEntity = optional.get();
         //商户进件申请
         try {
-            Boolean success = this.merchantInto(merchantEntity);
+            Boolean success = this.merchantInto(merchantEntity, requestParamsEntity);
             if (success == null || !success) {
                 throw new RuntimeException("商户进件请求success 未成功");
             }
@@ -81,9 +90,8 @@ public class MerchantServiceImpl implements MerchantService {
 
     }
 
-    private Boolean merchantInto(MerchantEntity merchantEntity) {
+    private Boolean merchantInto(MerchantEntity merchantEntity, RequestParamsEntity requestParamsEntity) {
 
-        TreeMap<String, String> params = new TreeMap<>();
         String merchantName = merchantEntity.getMerchantName();// 商户名称  M
         String businessScope = merchantEntity.getBusinessScope();// 营业范围  M
         String businessTerm = merchantEntity.getBusinessTerm();//营业期限  M 格式：yyyy - MM - dd，营业期限为⻓长期时，填：2199 - 12 - 31
@@ -107,20 +115,21 @@ public class MerchantServiceImpl implements MerchantService {
         String settleBankcardNo = merchantEntity.getSettleBankcardNo();//结算银⾏行行卡号  M
         String settleBankcardUserName = merchantEntity.getSettleBankcardUserName();// 结算银⾏行行卡⽤用户姓名 M
         String settleBankcardLineNumber = merchantEntity.getSettleBankcardLineNumb(); //银⾏行行卡联⾏行行号  M 通过银⾏行行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
-        String settleBankcardFinanceAreaCode = merchantEntity.getSettleBankcardFinanceAreaCode();//银⾏行行卡结算地区码  M 银⾏行行卡财务结算地区码，通过接⼝口⼀一查询获得
+        String settleBankcardFinanceAreaCode = merchantEntity.getSettleBankcardFinanceAreaCode();//银⾏行行卡结算地区码  M 银⾏行行卡财务结算地区码，通过接口⼀一查询获得
         String settlePhoneNo = merchantEntity.getSettlePhoneNo();// 银⾏行行预留留⼿手机号  M
         String merchantTxnRate = merchantEntity.getMerchantTxnRate();// 商户签约交易易费率  M 单位：%
         String merchantTxnSettlePeriod = merchantEntity.getMerchantTxnSettlePeriod();// 商户交易易结算周期  M 填“1”
+        String integrateLicense = merchantEntity.getLicenseType();//三证合⼀一照;
+
+        String requestSystem = requestParamsEntity.getRequestSystem();//请求系统  M 平台商在聚合平台申请的平台编码
+        String requestSeqId = requestParamsEntity.getRequestSeqId(); //请求流⽔水号  M 保证每次请求唯⼀一
+        String platformMerchantNo = requestParamsEntity.getPlatformMerchantNo();// 平台商商户号  M 平台商在商服开的商户号，作为代理理商与平台商下的商户进⾏行行绑定
+        String agentMerchantCode = requestParamsEntity.getAgentMerchantCode();// 代理理商商户号  M 平台商在翼⽀支付代理理商平台开通的商户号
+        String recommendNo = requestParamsEntity.getRecommendNo();// 员⼯工账号  M 平台商在翼⽀支付代理理商平台为⾃自⼰己的员⼯工开通的员⼯工账号
 
         //todo:  没有直接数据 待完善
-        String merchantNameShort; //商户简称  M 接⼝口进件上传给微信⽀支付宝通道的商户简称
-        String requestSystem;//请求系统  M 平台商在聚合平台申请的平台编码
-        String requestSeqId; //请求流⽔水号  M 保证每次请求唯⼀一
-        String platformMerchantNo;// 平台商商户号  M 平台商在商服开的商户号，作为代理理商与平台商下的商户进⾏行行绑定
+        String merchantNameShort; //商户简称  M 接口进件上传给微信⽀支付宝通道的商户简称
         String merchantNo; //商户号  M 商户在平台商侧的商户号
-        String agentMerchantCode;// 代理理商商户号  M 平台商在翼⽀支付代理理商平台开通的商户号
-        String recommendNo;// 员⼯工账号  M 平台商在翼⽀支付代理理商平台为⾃自⼰己的员⼯工开通的员⼯工账号
-        String integrateLicense;//三证合⼀一照;
         /*
         mac检验码  M  字符串串拼接顺序：
             requestSystem+requestSeqId+merchant
