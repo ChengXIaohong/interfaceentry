@@ -46,3 +46,4 @@ kdypay:
     agentMerchantCode: 3178002068870884
     recommendNo: 17621390110
     macc: 5399
+    requestUri: http://116.228.151.160:18002/
