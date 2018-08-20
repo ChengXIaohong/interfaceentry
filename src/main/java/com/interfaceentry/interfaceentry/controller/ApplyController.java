@@ -62,7 +62,7 @@ public class ApplyController {
      */
     @RequestMapping("/getApply")
     public ModelAndView getApply(String status) {
-        OnLineExecutorService.getSubmitResult("111" , "222");
+        OnLineExecutorService.taskForGetResult("111" , "222");
         ModelAndView modelAndView = new ModelAndView("getApply");
         List<MerchantEntity> merchantList = merchantService.getMerchantByStatus(status);
         modelAndView.addObject("merchantList", merchantList);

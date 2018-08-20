@@ -27,7 +27,7 @@ public class OnLineExecutorService {
      * @param requestSeqId
      * @param merchantNo
      */
-    public static void getSubmitResult(String requestSeqId, String merchantNo) {
+    public static void taskForGetResult(String requestSeqId, String merchantNo) {
 
         Timer timer = new Timer();
         timerContainer.put(requestSeqId, timer);
@@ -56,7 +56,7 @@ public class OnLineExecutorService {
         };
 
         long delay = 0;
-        long intevalPeriod = 5 * 60 * 1000;
+        long intevalPeriod = /*5 * 60 * */1000;
         timer.scheduleAtFixedRate(task, delay, intevalPeriod);
     }
 

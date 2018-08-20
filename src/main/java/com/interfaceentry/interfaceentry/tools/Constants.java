@@ -36,4 +36,8 @@ public class Constants {
             this.statusName = statusName;
         }
     }
+
+    public static void main(String[] args) {
+        System.out.println("as");
+    }
 }
