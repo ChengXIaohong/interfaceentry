@@ -1,6 +1,7 @@
 package com.interfaceentry.interfaceentry.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.interfaceentry.interfaceentry.dao.MerchantRespository;
 import com.interfaceentry.interfaceentry.dao.RequestParamsRespository;
@@ -8,17 +9,16 @@ import com.interfaceentry.interfaceentry.entity.MerchantEntity;
 import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
 import com.interfaceentry.interfaceentry.service.RequestParamsService;
+import com.interfaceentry.interfaceentry.service.model.SettleBankInfo;
 import com.interfaceentry.interfaceentry.tools.Constants;
 import com.interfaceentry.interfaceentry.tools.OkHttpUtil;
+import com.interfaceentry.interfaceentry.tools.OnLineExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 商户service实现
@@ -31,6 +31,8 @@ public class MerchantServiceImpl implements MerchantService {
     private Logger logger = LoggerFactory.getLogger(MerchantServiceImpl.class);
     //申请平台商商户进件
     private static String INTO_URL = "{API_Url}/mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
+    //申请平台商商户进件
+    private static String GET_BANK_INFOS = "{API_Url}/mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
 
 
     @Autowired
@@ -92,13 +94,42 @@ public class MerchantServiceImpl implements MerchantService {
             if (success == null || !success) {
                 throw new RuntimeException("商户进件请求success 未成功");
             }
-            //todo: 签约
-
-
         } catch (Exception e) {
             logger.error("商户进件请求失败 merchantId:{}", merchantEntity.getId(), e);
         }
+        //签约
+        try {
+            OnLineExecutorService.taskForGetResult(requestParamsEntity.getRequestSeqId(), String.valueOf(merchantEntity.getId()));
+        } catch (Exception e) {
+            logger.error("商户进件签约失败 merchantId:{},requestSeqId:{}", merchantEntity.getId(), requestParamsEntity.getRequestSeqId(), e);
+        }
 
+    }
+
+    @Override
+    public List<SettleBankInfo> getSettleBankInfos(String bankName, String bankCode) {
+        ParamsEntity requestParamsEntity = requestParamsService.getParamsInstance();
+        String requestSystem = requestParamsEntity.getRequestSystem();//请求系统  M 平台商在聚合平台申请的平台编码
+        String requestSeqId = requestParamsEntity.getRequestSeqId();//请求流⽔水号  M 保证每次请求唯⼀
+        String mac = requestSystem + requestSeqId + bankName + requestParamsEntity.getKey();// mac检验码  M 字符串串拼接顺序：requestSystem + requestSeqId + bankName + 接⼝key
+
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("requestSystem", requestSystem);
+        paramsMap.put("requestSeqId", requestSeqId);
+        paramsMap.put("bankName", bankName);//银⾏名称  M 例例如：“浦东”
+        paramsMap.put("bankCode", bankCode);// 银⾏行行编码  M 例例如：中国农业银⾏行行 ABC、中国银⾏行行 BOC
+        paramsMap.put("mac", mac);
+
+        String data = JSON.toJSONString(paramsMap);
+        data = OkHttpUtil.post(MerchantServiceImpl.GET_BANK_INFOS, data, OkHttpUtil.APPLICATION_JSON);
+        JSONObject obj = JSONObject.parseObject(data);
+        Boolean success = (Boolean) obj.get("success");
+        if (success == null || !success) {
+            return Collections.EMPTY_LIST;
+        }
+        JSONArray result = obj.getJSONArray("result");
+        List<SettleBankInfo> settleBankInfos = JSONArray.parseArray(result.toJSONString(), SettleBankInfo.class);
+        return settleBankInfos;
     }
 
     private Boolean merchantInto(ParamsEntity requestParamsEntity) {

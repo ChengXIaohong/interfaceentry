@@ -4,6 +4,7 @@ import com.interfaceentry.interfaceentry.entity.MerchantEntity;
 import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
 import com.interfaceentry.interfaceentry.service.RequestParamsService;
+import com.interfaceentry.interfaceentry.service.model.SettleBankInfo;
 import com.interfaceentry.interfaceentry.tools.Constants;
 import com.interfaceentry.interfaceentry.tools.OnLineExecutorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class ApplyController {
      */
     @RequestMapping("/getApply")
     public ModelAndView getApply(String status) {
-        OnLineExecutorService.taskForGetResult("111" , "222");
+        OnLineExecutorService.taskForGetResult("111", "222");
         ModelAndView modelAndView = new ModelAndView("getApply");
         List<MerchantEntity> merchantList = merchantService.getMerchantByStatus(status);
         modelAndView.addObject("merchantList", merchantList);
@@ -85,5 +86,14 @@ public class ApplyController {
         } else {
             return merchantService.updateSubmissionStatusById(id, submissionStatus);
         }
+    }
+
+
+    /**
+     * 根据银行名称查询银行信息
+     */
+    @RequestMapping("/getSettleBankInfos")
+    public List<SettleBankInfo> getSettleBankInfos(String bankName, String bankCode) {
+        return merchantService.getSettleBankInfos(bankName, bankCode);
     }
 }
