@@ -21,4 +21,5 @@ public class DynamicParams {
     private String agentMerchantCode;
     private String recommendNo;
     private String macc;
+    private String requestUri;
 }
