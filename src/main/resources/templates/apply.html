@@ -34,7 +34,7 @@
     <div style="margin-top: 20px;margin-bottom: 15px;">
         <div style="margin: 0 auto;text-align: center;" class="tc-darkgray"><h3>申请聚合支付</h3></div>
     </div>
-    <form class="form-horizontal" role="form" style="margin: 0 auto" method="post" action="apply">
+    <form class="form-horizontal" role="form" style="margin: 0 auto" method="post" action="apply" enctype="multipart/form-data">
         <div class="form-group">
             <label for="merchantNameShort" class="col-sm-2 control-label">名称</label>
             <div class="col-sm-10">
@@ -141,8 +141,8 @@
                 <input type="file" class="form-control tc-darkgray" id="_identityCardFrontPic"
                        name="_identityCardFrontPic"
                        placeholder="请选择身份证正面图片" accept="image/png,image/jpeg"/>
-                <input type="hidden" id="identityCardFrontPic"
-                       name="identityCardFrontPic"/>
+                <!--<input type="hidden" id="identityCardFrontPic"
+                       name="identityCardFrontPic"/>-->
             </div>
         </div>
 
@@ -152,8 +152,8 @@
                 <input type="file" class="form-control tc-darkgray" id="_identityCardReversePic"
                        name="_identityCardReversePic"
                        placeholder="请选择身份证反面图片" accept="image/png,image/jpeg"/>
-                <input type="hidden" id="identityCardReversePic"
-                       name="identityCardReversePic"/>
+                <!--<input type="hidden" id="identityCardReversePic"
+                       name="identityCardReversePic"/>-->
             </div>
         </div>
 
@@ -192,8 +192,8 @@
                 <input type="file" class="form-control tc-darkgray" id="_licensePic"
                        name="_licensePic"
                        placeholder="请选择营业许可证照片" accept="image/png,image/jpeg"/>
-                <input type="hidden" id="licensePic"
-                       name="licensePic"/>
+                <!--<input type="hidden" id="licensePic"
+                       name="licensePic"/>-->
             </div>
         </div>
 
@@ -203,8 +203,8 @@
                 <input type="file" class="form-control tc-darkgray" id="_storeInteriorPic"
                        name="_storeInteriorPic"
                        placeholder="请选择店铺内景照片" accept="image/png,image/jpeg"/>
-                <input type="hidden" id="storeInteriorPic"
-                       name="storeInteriorPic"/>
+                <!--<input type="hidden" id="storeInteriorPic"
+                       name="storeInteriorPic"/>-->
             </div>
         </div>
 
@@ -214,8 +214,8 @@
                 <input type="file" class="form-control tc-darkgray" id="_storeSignBoardPic"
                        name="_storeSignBoardPic"
                        placeholder="请选择营业招牌照片" accept="image/png,image/jpeg"/>
-                <input type="hidden" id="storeSignBoardPic"
-                       name="storeSignBoardPic"/>
+                <!--<input type="hidden" id="storeSignBoardPic"
+                       name="storeSignBoardPic"/>-->
             </div>
         </div>
 
@@ -297,7 +297,7 @@
             $(this).datetimepicker('hide');
         });
 
-        $('input[type=file]').on('change', function (event) {
+ /*       $('input[type=file]').on('change', function (event) {
             var reader = new FileReader();
             reader.onload = function (e) {
                 var $targetId = event.target.id;
@@ -307,7 +307,7 @@
                 console.log(reader.result.length);
             }
             reader.readAsDataURL(this.files[0])
-        });
+        });*/
     })
 </script>
 </html>

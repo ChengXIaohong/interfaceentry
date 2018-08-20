@@ -1,10 +1,13 @@
 package com.interfaceentry.interfaceentry.entity;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.io.File;
 
 /**
  * 商户实体类
