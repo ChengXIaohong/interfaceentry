@@ -74,13 +74,13 @@ public class MerchantEntity extends BaseEntity {
     /**
      * 身份证正面照片
      */
-    @Column(columnDefinition="MEDIUMTEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String identityCardFrontPic;
 
     /**
      * 身份证反面面照片
      */
-    @Column(columnDefinition="MEDIUMTEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String identityCardReversePic;
 
     /**
@@ -103,19 +103,19 @@ public class MerchantEntity extends BaseEntity {
     /**
      * 营业许可证图片
      */
-    @Column(columnDefinition="MEDIUMTEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String licensePic;
 
     /**
      * 店铺内景照片
      */
-    @Column(columnDefinition="MEDIUMTEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String storeInteriorPic;
 
     /**
      * 店内招牌照片
      */
-    @Column(columnDefinition="MEDIUMTEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String storeSignBoardPic;
 
     /**
@@ -186,4 +186,11 @@ public class MerchantEntity extends BaseEntity {
      * 审核状态
      */
     private String submissionStatus;
+
+    /**
+     * 商户简称   接口进件上传给微信⽀支付宝通道的商户简称
+     */
+    private String merchantNameShort;
+
+
 }

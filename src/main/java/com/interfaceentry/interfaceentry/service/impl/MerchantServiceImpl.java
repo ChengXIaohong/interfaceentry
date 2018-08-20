@@ -7,6 +7,7 @@ import com.interfaceentry.interfaceentry.dao.RequestParamsRespository;
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
 import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
+import com.interfaceentry.interfaceentry.service.RequestParamsService;
 import com.interfaceentry.interfaceentry.tools.Constants;
 import com.interfaceentry.interfaceentry.tools.OkHttpUtil;
 import org.slf4j.Logger;
@@ -36,6 +37,8 @@ public class MerchantServiceImpl implements MerchantService {
     private MerchantRespository merchantRespository;
     @Autowired
     private RequestParamsRespository requestParamsRespository;
+    @Autowired
+    private RequestParamsService requestParamsService;
 
     @Override
     public MerchantEntity saveOrUpdate(MerchantEntity merchantEntity) {
@@ -77,7 +80,7 @@ public class MerchantServiceImpl implements MerchantService {
         }
         MerchantEntity merchantEntity = optional.get();
 
-        /*ParamsEntity requestParamsEntity = requestParamsRespository.findByXxxxx(XXXXX);
+        ParamsEntity requestParamsEntity = requestParamsService.getParamsInstance();
         requestParamsEntity.setMerchantEntity(merchantEntity);
         if (requestParamsEntity == null) {
             throw new RuntimeException("非法商户");
@@ -89,9 +92,12 @@ public class MerchantServiceImpl implements MerchantService {
             if (success == null || !success) {
                 throw new RuntimeException("商户进件请求success 未成功");
             }
+            //todo: 签约
+
+
         } catch (Exception e) {
             logger.error("商户进件请求失败 merchantId:{}", merchantEntity.getId(), e);
-        }*/
+        }
 
     }
 
@@ -128,15 +134,13 @@ public class MerchantServiceImpl implements MerchantService {
         String merchantTxnSettlePeriod = merchantEntity.getMerchantTxnSettlePeriod();// 商户交易易结算周期  M 填“1”
         String integrateLicense = merchantEntity.getLicenseType();//三证合⼀一照;
 
-        String requestSystem = requestParamsEntity.getRequestSystem();//请求系统  M 平台商在聚合平台申请的平台编码 写死1
-
+        String requestSystem = requestParamsEntity.getRequestSystem();//请求系统  M 平台商在聚合平台申请的平台编码
         String requestSeqId = requestParamsEntity.getRequestSeqId(); //请求流⽔水号  M 保证每次请求唯⼀一
         String platformMerchantNo = requestParamsEntity.getPlatformMerchantNo();// 平台商商户号  M 平台商在商服开的商户号，作为代理理商与平台商下的商户进⾏行行绑定
         String agentMerchantCode = requestParamsEntity.getAgentMerchantCode();// 代理理商商户号  M 平台商在翼⽀支付代理理商平台开通的商户号
         String recommendNo = requestParamsEntity.getRecommendNo();// 员⼯工账号  M 平台商在翼⽀支付代理理商平台为⾃自⼰己的员⼯工开通的员⼯工账号
 
-        //todo:  没有直接数据 待完善
-        String merchantNameShort; //商户简称  M 接口进件上传给微信⽀支付宝通道的商户简称
+        String merchantNameShort = merchantEntity.getMerchantNameShort(); //商户简称  M 接口进件上传给微信⽀支付宝通道的商户简称
         String merchantNo = String.valueOf(merchantEntity.getId()); //商户号  M 商户在平台商侧的商户号
 
         /*
@@ -154,7 +158,7 @@ public class MerchantServiceImpl implements MerchantService {
             ceAreaCode+merchantTxnRate+mercha
             ntTxnSettlePeriod+接口key
          */
-       /* String mac = requestSystem
+        String mac = requestSystem
                 + requestSeqId
                 + merchantNo
                 + merchantName
@@ -177,8 +181,8 @@ public class MerchantServiceImpl implements MerchantService {
                 + settleBankcardFinanceAreaCode
                 + merchantTxnRate
                 + merchantTxnSettlePeriod
-                + 接口key;
-*/
+                + requestParamsEntity.getKey();
+
 
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("merchantName", merchantName);
@@ -209,7 +213,7 @@ public class MerchantServiceImpl implements MerchantService {
         paramsMap.put("merchantTxnRate", merchantTxnRate);
         paramsMap.put("merchantTxnSettlePeriod", merchantTxnSettlePeriod);
 
-  /*      paramsMap.put("merchantNameShort", merchantNameShort);
+        paramsMap.put("merchantNameShort", merchantNameShort);
         paramsMap.put("agentMerchantCode", agentMerchantCode);
         paramsMap.put("recommendNo", recommendNo);
         paramsMap.put("mac", mac);
@@ -217,7 +221,7 @@ public class MerchantServiceImpl implements MerchantService {
         paramsMap.put("requestSeqId", requestSeqId);
         paramsMap.put("platformMerchantNo", platformMerchantNo);
         paramsMap.put("merchantNo", merchantNo);
-        paramsMap.put("integrateLicense", integrateLicense);*/
+        paramsMap.put("integrateLicense", integrateLicense);
 
         String data = JSON.toJSONString(paramsMap);
         data = OkHttpUtil.post(MerchantServiceImpl.INTO_URL, data, OkHttpUtil.APPLICATION_JSON);
