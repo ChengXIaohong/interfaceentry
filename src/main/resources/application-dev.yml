@@ -42,4 +42,5 @@ kdypay:
     agentMerchantCode: 3178002068870884
     recommendNo: 17621390110
     macc: 5399
-    requestUri: https://mapi.bestpay.com.cn
+    requestUri: https://mapi.bestpay.com.cn/
+    platformMerchantNo: 3178002069210364

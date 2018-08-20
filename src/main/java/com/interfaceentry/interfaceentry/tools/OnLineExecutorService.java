@@ -3,7 +3,9 @@ package com.interfaceentry.interfaceentry.tools;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.interfaceentry.interfaceentry.entity.ParamsEntity;
+import com.interfaceentry.interfaceentry.service.model.DynamicParams;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -69,7 +71,7 @@ public class OnLineExecutorService {
      * @param merchantNo
      * @return
      */
-    private static String getSubmitResultOnece(String requestSeqId, String merchantNo) {
+    private  static String getSubmitResultOnece(String requestSeqId, String merchantNo) {
 
         ParamsEntity paramsEntity = ParamsEntity.builder().build();
 
@@ -77,4 +79,5 @@ public class OnLineExecutorService {
         //return OkHttpUtil.post("{API_Url}/mapi/o2o/personalstore/platformMerchantService/querySignAggregateRusult", jsonStr, OkHttpUtil.APPLICATION_JSON);
         return "{\"errorCode\":\"000000\",\"errorMsg\":\"成功\",\"result\":\n{\"bestpayMctNo\":null,\"signStatus\":\"SIGNING\",\"signStatusDesc\":\"签约中\"},\"success\":true}";
     }
+
 }
