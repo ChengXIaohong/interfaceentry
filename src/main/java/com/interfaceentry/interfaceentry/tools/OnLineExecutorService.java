@@ -21,21 +21,23 @@ import java.util.TimerTask;
 public class OnLineExecutorService {
     private static Map<String, Timer> timerContainer = new HashMap<>();
 
-    public static void get(String requestSeqId, String merchantNo) {
-        Boolean flag = true;
+    /**
+     * 定时执行请求结果任务
+     *
+     * @param requestSeqId
+     * @param merchantNo
+     */
+    public static void getSubmitResult(String requestSeqId, String merchantNo) {
+
         Timer timer = new Timer();
         timerContainer.put(requestSeqId, timer);
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                String result = OnLineExecutorService.getSubmitResult(requestSeqId, merchantNo);
-
-                log.info(result);
-                log.info(requestSeqId);
-                log.info(merchantNo);
+                String result = OnLineExecutorService.getSubmitResultOnece(requestSeqId, merchantNo);
 
                 //判断结果
-                if (StringUtils.isEmpty(result)) {
+                if (!StringUtils.isEmpty(result)) {
                     JSONObject answerModel = JSON.parseObject(result);
 
                     if (answerModel.get("errorMsg").equals("成功")) {
@@ -45,10 +47,10 @@ public class OnLineExecutorService {
                         System.out.println(456);
                         //todo : 此处回写失败数据
                     }
-
-                } else {
                     timerContainer.get(requestSeqId).cancel();
                     timerContainer.remove(requestSeqId);
+                } else {
+                    log.info("未获取到结果，等下次轮询");
                 }
             }
         };
@@ -67,14 +69,11 @@ public class OnLineExecutorService {
      * @param merchantNo
      * @return
      */
-    private static String getSubmitResult(String requestSeqId, String merchantNo) {
-        ParamsEntity requestParamsEntity = ParamsEntity.builder().requestSeqId(requestSeqId).merchantNo(merchantNo).mac(AppMD5Util.getMD5(requestSeqId +
-                merchantNo)).build();
+    private static String getSubmitResultOnece(String requestSeqId, String merchantNo) {
 
-        log.info(requestParamsEntity.getKey());
-        log.info(requestParamsEntity.getRequestSystem());
+        ParamsEntity paramsEntity = ParamsEntity.builder().build();
 
-        String jsonStr = JSON.toJSONString(requestParamsEntity);
+
         //return OkHttpUtil.post("{API_Url}/mapi/o2o/personalstore/platformMerchantService/querySignAggregateRusult", jsonStr, OkHttpUtil.APPLICATION_JSON);
         return "{\"errorCode\":\"000000\",\"errorMsg\":\"成功\",\"result\":\n{\"bestpayMctNo\":null,\"signStatus\":\"SIGNING\",\"signStatusDesc\":\"签约中\"},\"success\":true}";
     }

@@ -40,7 +40,7 @@ public class InterfaceentryApplicationTests {
 
     @Test
     public void timerTest() {
-        OnLineExecutorService.get("1","2");
+       // OnLineExecutorService.getSubmitResult("1","2");
     }
     @Test
     public void ymlParmas(){
