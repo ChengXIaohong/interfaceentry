@@ -87,14 +87,13 @@ public class MerchantServiceImpl implements MerchantService {
         MerchantEntity merchantEntity = optional.get();
 
         ParamsEntity requestParamsEntity = requestParamsService.getParamsInstance();
-        requestParamsEntity.setMerchantEntity(merchantEntity);
         if (requestParamsEntity == null) {
             throw new RuntimeException("非法商户");
         }
 
         //商户进件申请
         try {
-            IntoResponseResult intoResponseResult = this.merchantInto(requestParamsEntity);
+            IntoResponseResult intoResponseResult = this.merchantInto(requestParamsEntity, merchantEntity);
             Boolean success = intoResponseResult.getSuccess();
             if (success == null) {
                 throw new RuntimeException("商户进件请求success 未成功");
@@ -150,9 +149,8 @@ public class MerchantServiceImpl implements MerchantService {
 
     }
 
-    private IntoResponseResult merchantInto(ParamsEntity requestParamsEntity) {
+    private IntoResponseResult merchantInto(ParamsEntity requestParamsEntity, MerchantEntity merchantEntity) {
         IntoResponseResult intoResponseResult = new IntoResponseResult();
-        MerchantEntity merchantEntity = requestParamsEntity.getMerchantEntity();
         requestParamsRespository.save(requestParamsEntity);
         String merchantName = merchantEntity.getMerchantName();// 商户名称  M
         String businessScope = merchantEntity.getBusinessScope();// 营业范围  M

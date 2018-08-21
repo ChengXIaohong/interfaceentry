@@ -79,13 +79,9 @@ public class ParamsEntity extends BaseEntity implements Serializable {
 
     /**
      * 商户号
-     * 商户在平台商侧的商户号
+     * 商户在平台商侧的商户号 手动外键id
      */
-    @ManyToOne(cascade = CascadeType.ALL, optional = true)
-    @JoinColumn(name = "merchant_id", nullable = false)
-    /*@ManyToOne(targetEntity = MerchantEntity.class)
-    @JoinColumn(name = "merchant_id", nullable = false, referencedColumnName = "id")*/
-    private MerchantEntity merchantEntity;
+    private Long merchantId;
 
 
     /**
