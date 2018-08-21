@@ -9,6 +9,7 @@ import com.interfaceentry.interfaceentry.entity.MerchantEntity;
 import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
 import com.interfaceentry.interfaceentry.service.RequestParamsService;
+import com.interfaceentry.interfaceentry.service.model.IntoResponseResult;
 import com.interfaceentry.interfaceentry.service.model.SettleBankInfo;
 import com.interfaceentry.interfaceentry.tools.AppMD5Util;
 import com.interfaceentry.interfaceentry.tools.Constants;
@@ -93,12 +94,17 @@ public class MerchantServiceImpl implements MerchantService {
 
         //商户进件申请
         try {
-            Boolean success = this.merchantInto(requestParamsEntity);
-            if (success == null || !success) {
+            IntoResponseResult intoResponseResult = this.merchantInto(requestParamsEntity);
+            Boolean success = intoResponseResult.getSuccess();
+            if (success == null) {
                 throw new RuntimeException("商户进件请求success 未成功");
             }
+            if (!success) {
+                String errorMsg = intoResponseResult.getErrorMsg();
+                throw new RuntimeException(errorMsg);
+            }
         } catch (Exception e) {
-            logger.error("商户进件请求失败 merchantId:{}", merchantEntity.getId(), e);
+            logger.error("商户进件请求失败 merchantId:{}, 电信errorMsg:{}", merchantEntity.getId(), e.getMessage(), e);
             throw e;
         }
         //签约
@@ -144,8 +150,8 @@ public class MerchantServiceImpl implements MerchantService {
 
     }
 
-    private Boolean merchantInto(ParamsEntity requestParamsEntity) {
-
+    private IntoResponseResult merchantInto(ParamsEntity requestParamsEntity) {
+        IntoResponseResult intoResponseResult = new IntoResponseResult();
         MerchantEntity merchantEntity = requestParamsEntity.getMerchantEntity();
 
         String merchantName = merchantEntity.getMerchantName();// 商户名称  M
@@ -269,10 +275,10 @@ public class MerchantServiceImpl implements MerchantService {
         String data = JSON.toJSONString(paramsMap);
         data = OkHttpUtil.post(requestParamsEntity.getRequestUri() + MerchantServiceImpl.INTO_URL, data, OkHttpUtil.APPLICATION_JSON);
         if (StringUtils.isEmpty(data)) {
-            return Boolean.FALSE;
+            return intoResponseResult;
         }
-        JSONObject obj = JSONObject.parseObject(data);
-        return (Boolean) obj.get("success");
+        intoResponseResult = JSONObject.parseObject(data, IntoResponseResult.class);
+        return intoResponseResult;
     }
 
 
