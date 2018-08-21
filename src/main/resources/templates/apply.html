@@ -74,20 +74,26 @@
         </div>
 
         <div class="form-group">
-            <label for="provinceCode" class="col-sm-2 control-label">省份编码</label>
+            <label for="provinceCode" class="col-sm-2 control-label">选择省份</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control tc-darkgray" id="provinceCode"
+                <input type="hidden" class="form-control tc-darkgray" id="provinceCode"
                        name="provinceCode"
                        placeholder="请输入省份编码">
+                <select id="_provinceCode" name="_provinceCode" class="form-control tc-darkgray">
+                    <option>请选择省份</option>
+                </select>
             </div>
         </div>
 
         <div class="form-group">
-            <label for="cityCode" class="col-sm-2 control-label">城市编码</label>
+            <label for="cityCode" class="col-sm-2 control-label">选择城市</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control tc-darkgray" id="cityCode"
+                <input type="hidden" class="form-control tc-darkgray" id="cityCode"
                        name="cityCode"
                        placeholder="请输入城市编码">
+                <select id="_cityCode" name="_cityCode" class="form-control tc-darkgray">
+                    <option>请选择城市</option>
+                </select>
             </div>
         </div>
 
@@ -335,6 +341,7 @@
         <!-- 商户交易易结算周期  M 填“1” -->
         <input type="hidden" value="1" name="merchantTxnSettlePeriod">
 
+        <input type="hidden" value="1" name="merchantTxnRate">
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <a id="checkform" class="btn btn-default">提交</a>
@@ -359,6 +366,8 @@
          * 银行选择事件 下拉监听
          **/
         $("#settleBankName_select").change(function () {
+            //赋值给结算银行名称
+            $("#settleBankName").val($("#settleBankName_select").find("option:selected").text())
             getBanks();
         })
 
@@ -373,7 +382,7 @@
          * 结算支行监听
          **/
         $("#settleBankcard").change(function () {
-            if (BANKS.length < 1 ) {
+            if (BANKS.length < 1) {
                 return;
             }
             var banksIndex = $("#settleBankcard").val();
@@ -413,19 +422,21 @@
                 return;
             }
 
-
-            /*$("#merchant_info_form input").each(function () {
+            var submit = true;
+            $("#merchant_info_form input").each(function () {
                 var current = $(this);
                 if (current.attr("type") == "hidden") {
                     return true;
                 }
                 if (current.val().length < 1) {
                     alert($(this).attr("placeholder"));
+                    submit = false;
                     return false;
                 }
-            })*/
-
-            $("#merchant_info_form").submit();
+            })
+            if (submit) {
+                $("#merchant_info_form").submit();
+            }
         })
     })
 
@@ -469,5 +480,43 @@
         $("#settleBankcard").append(banksSelectHtml);
     }
 
+</script>
+<!-- 地区数据 -->
+<script>
+    //页面加载完成 初始化地区省份数据
+    $(function () {
+        $.get("area/province", function (result) {
+            var provinceStr = "";
+            for (i in result) {
+                provinceStr += "<option class='tc-darkgray' value='" + result[i].provinceCode + "'>" + result[i].provinceName + "</option>>";
+            }
+            $("#_provinceCode").append(provinceStr);
+        })
+        //省份修改事件监听 
+        $("#_provinceCode").change(function () {
+            var provinceCode = $("#_provinceCode").val();
+            $("#provinceCode").val(provinceCode);
+            getCity(provinceCode);
+        })
+
+        //城市修改事件监听
+        $("#_cityCode").change(function () {
+            var cityCode = $("#_cityCode").val();
+            $("#cityCode").val(cityCode);
+        })
+
+    })
+    //获取城市数据 依据：省份
+    var getCity = function (provinceCode) {
+        $("#_cityCode").empty();
+        $("#_cityCode").append("<option>请选择城市</option>");
+        $.get("area/city", {provinceCode: provinceCode}, function (result) {
+            var cityStr = "";
+            for (i in result) {
+                cityStr += "<option class='tc-darkgray' value='" + result[i].cityCode + "'>" + result[i].cityName + "</option>>";
+            }
+            $("#_cityCode").append(cityStr);
+        })
+    }
 </script>
 </html>

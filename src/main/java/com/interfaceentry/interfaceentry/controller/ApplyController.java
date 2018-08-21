@@ -31,7 +31,7 @@ import java.util.Map;
  * @create 2018-08-17 15:03
  **/
 @Controller
-public class ApplyController {
+public class ApplyController extends FinalExceptionHandler {
 
     @Autowired
     private MerchantService merchantService;
@@ -91,7 +91,6 @@ public class ApplyController {
      */
     @RequestMapping("/getApply")
     public ModelAndView getApply(String status) {
-        OnLineExecutorService.taskForGetResult("111", "222");
         ModelAndView modelAndView = new ModelAndView("getApply");
         List<MerchantEntity> merchantList = merchantService.getMerchantByStatus(status);
         modelAndView.addObject("merchantList", merchantList);

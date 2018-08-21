@@ -62,8 +62,10 @@
         $.get("updateStatus", {id: id, submissionStatus: type}, function (result) {
            if ("success" == result) {
                location.reload();
+           } else {
+               alert(result.errorInfo.msg);
            }
-        })
+        },"json")
 
     }
 </script>
