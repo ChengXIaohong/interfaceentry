@@ -223,11 +223,12 @@
 
         <div class="form-group">
             <label for="settleBankName" class="col-sm-2 control-label">结算银行</label>
-            <div class="col-sm-10">
+            <div class="col-sm-10"><input type="text" class="form-control tc-darkgray" id="bank_condition_city"
+                                          placeholder="请输入结算银行地区" style="width:20%;float: left">
                 <input type="hidden" class="form-control tc-darkgray" id="settleBankName"
                        name="settleBankName"
                        placeholder="请输入结算银行名称"/>
-                <select class="form-control tc-darkgray" id="settleBankName_select">
+                <select class="form-control tc-darkgray" id="settleBankName_select" style="width:40%;float:left;">
                     <option value="">请选择结算银行名称</option>
                     <option value="ABC">重庆中国农业银行</option>
                     <option value="BCOM">交通银行</option>
@@ -268,6 +269,10 @@
                     <option value="WZBK">温州银行</option>
                     <option value="XIANBANK">西安银行</option>
                 </select>
+                <select class="form-control tc-darkgray" id="settleBankcard" style="float:left;width:40%">
+                    <option class="" value="tc-darkgray">请选择结算银行</option>
+                </select>
+                <div style="clear:both"></div>
             </div>
         </div>
 
@@ -282,7 +287,6 @@
                        placeholder="请输入结算银行编码"/>
             </div>
         </div>-->
-
         <div class="form-group">
             <label for="settleBankcardNo" class="col-sm-2 control-label">结算银行卡号</label>
             <div class="col-sm-10">
@@ -304,7 +308,7 @@
         <div class="form-group">
             <label for="settleBankcardLineNumb" class="col-sm-2 control-label">银行卡联行号</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control tc-darkgray" id="settleBankcardLineNumb"
+                <input type="text" readonly class="form-control tc-darkgray" id="settleBankcardLineNumb"
                        name="settleBankcardLineNumb"
                        placeholder="请输入结算银行卡联行号"/>
             </div>
@@ -313,7 +317,7 @@
         <div class="form-group">
             <label for="settleBankcardFinanceAreaCode" class="col-sm-2 control-label">银行卡结算地区码</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control tc-darkgray" id="settleBankcardFinanceAreaCode"
+                <input type="text" class="form-control tc-darkgray" readonly id="settleBankcardFinanceAreaCode"
                        name="settleBankcardFinanceAreaCode"
                        placeholder="请输入银行卡结算地区码"/>
             </div>
@@ -340,32 +344,50 @@
 </div>
 </body>
 <script>
+    /**
+     *选择条件下所有银行信息
+     **/
+    var BANKS;
     $(function () {
+
         //时间控件初始化
         $("#businessTerm").datetimepicker({language: 'zh', format: 'yyyy-mm-dd'}).on('changeDate', function (ev) {
             $(this).datetimepicker('hide');
         });
 
         /**
-         * 银行选择事件
+         * 银行选择事件 下拉监听
          **/
         $("#settleBankName_select").change(function () {
+            getBanks();
+        })
 
-            //取银行名称
-            var bankName = $("#settleBankName_select").find("option:selected").text();
-            //取银行编码
-            var bankCode = $("#settleBankName_select").val();
-            //合法性判断
-            var canNext = true;
-            if (bankCode.length < 1) {
-                canNext = false;
-            }
-            if (canNext) {
-                $.get("getSettleBankInfos", {bankName: bankName, bankCode: bankCode}, function (banksInfo) {
-                    buiidBankInfo(banksInfo);
-                })
-            }
+        /**
+         * 银行选择事件 城市监听
+         **/
+        $("#bank_condition_city").change(function () {
+            getBanks();
+        })
 
+        /**
+         * 结算支行监听
+         **/
+        $("#settleBankcard").change(function () {
+            if (BANKS.length < 1 ) {
+                return;
+            }
+            var banksIndex = $("#settleBankcard").val();
+            var chooseBank;
+
+            for (index in BANKS) {
+                if (index == banksIndex) {
+                    chooseBank = BANKS[index];
+                    break;
+                }
+            }
+            console.log(chooseBank);
+            $("#settleBankcardLineNumb").val(chooseBank.bankLineNumber);
+            $("#settleBankcardFinanceAreaCode").val(chooseBank.financeAreaCode);
         })
 
         $("#checkform").on("click", function () {
@@ -392,29 +414,60 @@
             }
 
 
-             /*$("#merchant_info_form input").each(function () {
-                 var current = $(this);
-                 if (current.attr("type") == "hidden") {
-                     return true;
-                 }
-                 if (current.val().length < 1) {
-                     alert($(this).attr("placeholder"));
-                     return false;
-                 }
-             })*/
+            /*$("#merchant_info_form input").each(function () {
+                var current = $(this);
+                if (current.attr("type") == "hidden") {
+                    return true;
+                }
+                if (current.val().length < 1) {
+                    alert($(this).attr("placeholder"));
+                    return false;
+                }
+            })*/
 
             $("#merchant_info_form").submit();
         })
     })
 
+    var getBanks = function () {
+        //情况上次条件下的结果数据
+        $("#settleBankcardFinanceAreaCode").val("");
+        $("#settleBankcardLineNumb").val("");
+
+        //清空幻读
+        $("#settleBankcard").html("<option class=\"\" value=\"tc-darkgray\">请选择结算银行</option>");
+        //取银行名称
+        var bankName = $("#bank_condition_city").val();
+        //取银行编码
+        var bankCode = $("#settleBankName_select").val();
+        //合法性判断
+        var canNext = true;
+        if (bankCode.length < 1) {
+            canNext = false;
+        }
+        if (canNext) {
+            $.get("getSettleBankInfos", {bankName: bankName, bankCode: bankCode}, function (banksInfo) {
+                BANKS = banksInfo;
+                buiidBankInfo();
+            })
+        }
+    }
+
     /**
      * 处理回写数据
      */
-    function buiidBankInfo(banksInfo) {
-        for (i in banksInfo) {
+    function buiidBankInfo() {
+        var banksSelectHtml = "";
 
+        if (BANKS.length == 0) {
+            banksSelectHtml += "<option>无</option>"
+        } else {
+            for (i in BANKS) {
+                banksSelectHtml += "<option value='" + i + "'>" + BANKS[i].bankName + "</option>"
+            }
         }
+        $("#settleBankcard").append(banksSelectHtml);
     }
-    
+
 </script>
 </html>
