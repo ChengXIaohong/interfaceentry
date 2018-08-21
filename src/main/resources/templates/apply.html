@@ -494,7 +494,7 @@
         })
         //省份修改事件监听 
         $("#_provinceCode").change(function () {
-            var provinceCode =  $("#_provinceCode").val();
+            var provinceCode = $("#_provinceCode").val();
             $("#provinceCode").val(provinceCode);
             getCity(provinceCode);
         })
@@ -510,7 +510,7 @@
     var getCity = function (provinceCode) {
         $("#_cityCode").empty();
         $("#_cityCode").append("<option>请选择城市</option>");
-        $.get("area/city",{provinceCode:provinceCode}, function (result) {
+        $.get("area/city", {provinceCode: provinceCode}, function (result) {
             var cityStr = "";
             for (i in result) {
                 cityStr += "<option class='tc-darkgray' value='" + result[i].cityCode + "'>" + result[i].cityName + "</option>>";
