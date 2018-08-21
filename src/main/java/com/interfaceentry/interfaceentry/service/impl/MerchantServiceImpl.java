@@ -104,7 +104,7 @@ public class MerchantServiceImpl implements MerchantService {
                 throw new RuntimeException(errorMsg);
             }
         } catch (Exception e) {
-            logger.error("商户进件请求失败 merchantId:{}, 电信errorMsg:{}", merchantEntity.getId(), e.getMessage(), e);
+            logger.error("商户进件请求失败 merchantId:{}, errorMsg:{}", merchantEntity.getId(), e.getMessage(), e);
             throw e;
         }
         //签约
