@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import sun.security.provider.MD5;
 
 import java.util.*;
 
@@ -87,14 +86,13 @@ public class MerchantServiceImpl implements MerchantService {
         MerchantEntity merchantEntity = optional.get();
 
         ParamsEntity requestParamsEntity = requestParamsService.getParamsInstance();
-        requestParamsEntity.setMerchantEntity(merchantEntity);
         if (requestParamsEntity == null) {
             throw new RuntimeException("非法商户");
         }
 
         //商户进件申请
         try {
-            IntoResponseResult intoResponseResult = this.merchantInto(requestParamsEntity);
+            IntoResponseResult intoResponseResult = this.merchantInto(requestParamsEntity, merchantEntity);
             Boolean success = intoResponseResult.getSuccess();
             if (success == null) {
                 throw new RuntimeException("商户进件请求success 未成功");
@@ -150,10 +148,8 @@ public class MerchantServiceImpl implements MerchantService {
 
     }
 
-    private IntoResponseResult merchantInto(ParamsEntity requestParamsEntity) {
+    private IntoResponseResult merchantInto(ParamsEntity requestParamsEntity, MerchantEntity merchantEntity) {
         IntoResponseResult intoResponseResult = new IntoResponseResult();
-        MerchantEntity merchantEntity = requestParamsEntity.getMerchantEntity();
-
         String merchantName = merchantEntity.getMerchantName();// 商户名称  M
         String businessScope = merchantEntity.getBusinessScope();// 营业范围  M
         String businessTerm = merchantEntity.getBusinessTerm();//营业期限  M 格式：yyyy - MM - dd，营业期限为⻓长期时，填：2199 - 12 - 31
@@ -278,6 +274,24 @@ public class MerchantServiceImpl implements MerchantService {
             return intoResponseResult;
         }
         intoResponseResult = JSONObject.parseObject(data, IntoResponseResult.class);
+        //保存请求数据
+        //补充数据
+        requestParamsEntity.setCreateAt(System.currentTimeMillis());
+        requestParamsEntity.setUpdateAt(System.currentTimeMillis());
+//      requestParamsEntity.setCreateBy();
+//      requestParamsEntity.setUpdateBy();
+//      requestParamsEntity.setBankCode();
+
+        requestParamsEntity.setBankName(merchantEntity.getSettleBankName());
+
+
+        requestParamsEntity.setMerchantId(merchantEntity.getId());
+        requestParamsEntity.setResponseResult(data);
+
+
+        requestParamsRespository.save(requestParamsEntity);
+
+
         return intoResponseResult;
     }
 

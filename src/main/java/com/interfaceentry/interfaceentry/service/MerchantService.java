@@ -15,6 +15,7 @@ public interface MerchantService {
 
     /**
      * 添加商户
+     *
      * @param merchantEntity
      * @return
      */
@@ -22,6 +23,7 @@ public interface MerchantService {
 
     /**
      * 获取某种状态列表
+     *
      * @param status
      * @return
      */
@@ -29,6 +31,7 @@ public interface MerchantService {
 
     /**
      * 状态修改
+     *
      * @param id
      * @param submissionStatus
      * @return
@@ -37,6 +40,7 @@ public interface MerchantService {
 
     /**
      * 提交到翼支付审核
+     *
      * @param id
      */
     void submiToYZHSH(Long id);

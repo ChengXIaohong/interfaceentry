@@ -39,18 +39,19 @@ public class OkHttpUtil {
 
 
     private static OkHttpUtil okHttpUtil;
-    public static OkHttpUtil getInstance(){
-        if(okHttpUtil == null){
+
+    public static OkHttpUtil getInstance() {
+        if (okHttpUtil == null) {
             okHttpUtil = new OkHttpUtil();
         }
         return okHttpUtil;
     }
 
-    public static OkHttpClient createOkHttpClient(){
+    public static OkHttpClient createOkHttpClient() {
         return OkHttpUtil.getInstance().createClient();
     }
 
-    public static OkHttpClient createOkHttpsClient(byte[] keyStorePath, String password){
+    public static OkHttpClient createOkHttpsClient(byte[] keyStorePath, String password) {
         try {
             //初始化证书文件
             SSLContext sslContext = SSLContextUtil.getSSLContext(keyStorePath, password);
@@ -88,18 +89,19 @@ public class OkHttpUtil {
 
     /**
      * Get请求
+     *
      * @param url
      * @return
      */
-    public String doGet(String url){
+    public String doGet(String url) {
         try {
             Request request = new Request.Builder()
                     .url(url)
                     .get()
                     .build();
 
-            Response response =  this.doExecute(request);
-            return new String(response.body().bytes(),"utf-8");
+            Response response = this.doExecute(request);
+            return new String(response.body().bytes(), "utf-8");
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -108,22 +110,23 @@ public class OkHttpUtil {
 
     /**
      * 普通body传输
+     *
      * @param url
      * @param data
      * @param contentType
      * @return
      */
-    public String doPost(String url, String data, String contentType){
+    public String doPost(String url, String data, String contentType) {
         try {
             okhttp3.MediaType mediaType = MediaType.parse(contentType);
-            RequestBody requestBody = RequestBody.create(mediaType,data);
+            RequestBody requestBody = RequestBody.create(mediaType, data);
             Request request = new Request.Builder()
                     .url(url)
                     .post(requestBody)
                     .build();
 
             Response response = this.doExecute(request);
-            return new String(response.body().bytes(),"utf-8");
+            return new String(response.body().bytes(), "utf-8");
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -132,12 +135,13 @@ public class OkHttpUtil {
 
     /**
      * 流传输
+     *
      * @param url
      * @param rawData
      * @param contentType
      * @return
      */
-    public String doPostRaw(String url, String rawData, String contentType){
+    public String doPostRaw(String url, String rawData, String contentType) {
         try {
             okhttp3.MediaType mediaType = MediaType.parse(contentType);
             RequestBody body = new RequestBody() {
@@ -145,6 +149,7 @@ public class OkHttpUtil {
                 public MediaType contentType() {
                     return mediaType;
                 }
+
                 @Override
                 public void writeTo(BufferedSink bufferedSink) throws IOException {
                     bufferedSink.writeUtf8(rawData);
@@ -166,16 +171,17 @@ public class OkHttpUtil {
 
     /**
      * HTTPS请求
+     *
      * @param url
      * @param data
      * @param contentType
      * @param sslContext
      * @return
      */
-    public String doPostSSL(String url, String data, String contentType, SSLContext sslContext){
+    public String doPostSSL(String url, String data, String contentType, SSLContext sslContext) {
         try {
             okhttp3.MediaType mediaType = MediaType.parse(contentType);
-            RequestBody requestBody = RequestBody.create(mediaType,data);
+            RequestBody requestBody = RequestBody.create(mediaType, data);
             Request request = new Request.Builder()
                     .url(url)
                     .post(requestBody)
@@ -183,7 +189,7 @@ public class OkHttpUtil {
 
             Response response = doExecute(request, sslContext);
             logger.info("response status code:" + response.code());
-            return new String(response.body().bytes(),"utf-8");
+            return new String(response.body().bytes(), "utf-8");
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -193,6 +199,7 @@ public class OkHttpUtil {
 
     /**
      * 执行HTTP请求
+     *
      * @param request
      * @return
      * @throws IOException
@@ -203,7 +210,7 @@ public class OkHttpUtil {
         //call.enqueue(callback);
         Response response = call.execute();
         logger.info("response status code:" + response.code());
-        if(!response.isSuccessful()){
+        if (!response.isSuccessful()) {
             throw new RuntimeException();
         }
         return response;
@@ -211,6 +218,7 @@ public class OkHttpUtil {
 
     /**
      * 执行HTTPS请求
+     *
      * @param request
      * @param sslContext
      * @return
@@ -222,14 +230,14 @@ public class OkHttpUtil {
         //call.enqueue(callback);
         Response response = call.execute();
         logger.info("response status code:" + response.code());
-        if(!response.isSuccessful()){
+        if (!response.isSuccessful()) {
             throw new RuntimeException();
         }
         return response;
     }
 
     /**
-     *  添加响应拦截器
+     * 添加响应拦截器
      */
     private Interceptor respInterceptor = new Interceptor() {
         @Override
@@ -249,7 +257,7 @@ public class OkHttpUtil {
 
         @Override
         public void onResponse(Call call, Response response) throws IOException {
-            String responseStr = new String(response.body().bytes(),"UTF-8");
+            String responseStr = new String(response.body().bytes(), "UTF-8");
             logger.info(responseStr);
         }
     };
@@ -257,7 +265,7 @@ public class OkHttpUtil {
     /**
      * 创建HTTP对象
      */
-    public OkHttpClient createClient(){
+    public OkHttpClient createClient() {
         return new OkHttpClient.Builder()
                 .readTimeout(10, TimeUnit.SECONDS)
                 .connectTimeout(10, TimeUnit.SECONDS)
@@ -270,7 +278,7 @@ public class OkHttpUtil {
     /**
      * 创建HTTPS对象
      */
-    public OkHttpClient createSSLClient(SSLContext sslContext){
+    public OkHttpClient createSSLClient(SSLContext sslContext) {
         return new OkHttpClient.Builder()
                 .readTimeout(10, TimeUnit.SECONDS)
                 .connectTimeout(10, TimeUnit.SECONDS)

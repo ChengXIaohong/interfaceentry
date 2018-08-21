@@ -1,13 +1,13 @@
 package com.interfaceentry.interfaceentry.entity;
 
-import com.interfaceentry.interfaceentry.service.model.DynamicParams;
-import com.interfaceentry.interfaceentry.tools.Constants;
-import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * 请求携带的数据
@@ -79,11 +79,9 @@ public class ParamsEntity extends BaseEntity implements Serializable {
 
     /**
      * 商户号
-     * 商户在平台商侧的商户号
+     * 商户在平台商侧的商户号 手动外键id
      */
-    @ManyToOne(cascade = CascadeType.ALL, optional = true)
-    @JoinColumn(name = "merchant_id", nullable = false)
-    private MerchantEntity merchantEntity;
+    private Long merchantId;
 
 
     /**

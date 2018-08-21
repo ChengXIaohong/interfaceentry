@@ -1,7 +1,6 @@
 package com.interfaceentry.interfaceentry.controller;
 
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
-import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
 import com.interfaceentry.interfaceentry.service.RequestParamsService;
 import com.interfaceentry.interfaceentry.service.model.SettleBankInfo;
@@ -66,16 +65,16 @@ public class ApplyController {
 
         ModelAndView modelAndView = new ModelAndView("apply-status");
 
-        MultipartFile[] multipartFiles =  {_identityCardFrontPic,_identityCardReversePic,_licensePic,_storeInteriorPic,_storeSignBoardPic};
-        String[] nameStrings = {"_identityCardFrontPic","_identityCardReversePic","_licensePic","_storeInteriorPic","_storeSignBoardPic"};
-        Map<String , MultipartFile> fileMap = new HashMap<>(multipartFiles.length);
-        for (int i = 0 ; i < multipartFiles.length ; i++) {
+        MultipartFile[] multipartFiles = {_identityCardFrontPic, _identityCardReversePic, _licensePic, _storeInteriorPic, _storeSignBoardPic};
+        String[] nameStrings = {"_identityCardFrontPic", "_identityCardReversePic", "_licensePic", "_storeInteriorPic", "_storeSignBoardPic"};
+        Map<String, MultipartFile> fileMap = new HashMap<>(multipartFiles.length);
+        for (int i = 0; i < multipartFiles.length; i++) {
             String name = nameStrings[i];
             MultipartFile multipartFile = multipartFiles[i];
-            fileMap.put(name,multipartFile);
+            fileMap.put(name, multipartFile);
         }
 
-        this.initFile2Base64Set2Obj(merchantEntity , fileMap);
+        this.initFile2Base64Set2Obj(merchantEntity, fileMap);
 
 
         merchantEntity = merchantService.saveOrUpdate(merchantEntity);
@@ -128,6 +127,7 @@ public class ApplyController {
 
     /**
      * 图片转换
+     *
      * @param merchantEntity
      * @param fileMap
      */
@@ -150,6 +150,7 @@ public class ApplyController {
 
 
     }
+
     private String multipartFile2Base64(MultipartFile multipartFile) throws IOException {
         File f = null;
         if (multipartFile.equals("") || multipartFile.getSize() <= 0) {

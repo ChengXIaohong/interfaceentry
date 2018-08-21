@@ -1,9 +1,5 @@
 package com.interfaceentry.interfaceentry.tools;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
 /**
  * 常量类
  *
@@ -37,7 +33,7 @@ public class Constants {
     public static final String URI_SUBMIT_MERCHANT = "mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
 
     /**
-     *步骤四：待商户资质信息和基本信息上传成功
+     * 步骤四：待商户资质信息和基本信息上传成功
      * 后，翼⽀付运营⼈员会针对商户进⾏审核，在
      * 此审核期间，平台商每隔5分钟调⽤《聚合⽀付
      * 签约结果查询》接⼜进⾏商户⼊驻签约结果的
