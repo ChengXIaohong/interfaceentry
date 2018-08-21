@@ -179,10 +179,4 @@ public class ApplyController extends FinalExceptionHandler {
     public List<MccCode> getMccCode() {
         return merchantService.getMccCode();
     }
-    @RequestMapping("/lunxuntest")
-    @ResponseBody
-    public String lunxunTest(String requestSeqId, String merchantNo) {
-        OnLineExecutorService.getInstance().taskForGetResult(requestSeqId,merchantNo);
-        return "test";
-    }
 }
