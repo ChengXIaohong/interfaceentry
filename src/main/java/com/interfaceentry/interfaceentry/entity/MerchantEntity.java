@@ -195,5 +195,9 @@ public class MerchantEntity extends BaseEntity {
      */
     private String merchantNameShort;
 
+    /**
+     * 签约状态   接口进件上传给微信⽀支付宝通道的商户简称
+     */
+    private Boolean signStatus;
 
 }

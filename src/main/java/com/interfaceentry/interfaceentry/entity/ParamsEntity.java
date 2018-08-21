@@ -118,7 +118,20 @@ public class ParamsEntity extends BaseEntity implements Serializable {
     private String responseResult;
 
 
+    /**
+    *请求地址
+     **/
     private String requestUri;
+
+    /**
+     * 签约状态
+     */
+    private String signStatus;
+
+    /**
+     * 签约说明
+     */
+    private String signStatusDesc;
 
 
 }

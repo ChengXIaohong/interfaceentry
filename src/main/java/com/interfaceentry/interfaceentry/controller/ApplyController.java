@@ -168,4 +168,10 @@ public class ApplyController extends FinalExceptionHandler {
         f.delete();
         return Base64.getEncoder().encodeToString(idReversePicBuffer);
     }
+    @RequestMapping("/lunxuntest")
+    @ResponseBody
+    public String lunxunTest(String requestSeqId, String merchantNo) {
+        OnLineExecutorService.getInstance().taskForGetResult(requestSeqId,merchantNo);
+        return "test";
+    }
 }

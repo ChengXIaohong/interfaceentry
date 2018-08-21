@@ -47,5 +47,12 @@ public interface MerchantService {
 
     List<SettleBankInfo> getSettleBankInfos(String bankName, String bankCode);
 
+    /**
+     * 按id寻找商户
+     * @param id
+     * @return
+     */
+    MerchantEntity getById(Long id);
+
 
 }

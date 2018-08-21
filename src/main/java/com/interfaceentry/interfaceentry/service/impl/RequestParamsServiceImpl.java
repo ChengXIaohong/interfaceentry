@@ -41,4 +41,9 @@ public class RequestParamsServiceImpl implements RequestParamsService {
                 .build();
         return p;
     }
+
+    @Override
+    public ParamsEntity getParamsByRequestSeqId(String requestSeqId) {
+        return requestParamsRespository.findFirstByRequestSeqIdEquals(requestSeqId);
+    }
 }

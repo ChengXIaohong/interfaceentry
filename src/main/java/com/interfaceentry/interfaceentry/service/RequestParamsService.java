@@ -24,4 +24,11 @@ public interface RequestParamsService {
      * @return
      */
     ParamsEntity getParamsInstance();
+
+    /**
+     * 按照requestSeqId找paramsEntity
+     * @param requestSeqId
+     * @return
+     */
+    ParamsEntity getParamsByRequestSeqId(String requestSeqId);
 }

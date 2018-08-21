@@ -10,4 +10,10 @@ import org.springframework.data.repository.CrudRepository;
  * @create 2018-08-17 14:43
  **/
 public interface RequestParamsRespository extends CrudRepository<ParamsEntity, Long> {
+    /**
+     * 以requestSeqId寻找ParamsEntity
+     * @param requestSeqId
+     * @return
+     */
+    ParamsEntity findFirstByRequestSeqIdEquals(String requestSeqId);
 }

@@ -107,7 +107,7 @@ public class MerchantServiceImpl implements MerchantService {
         }
         //签约
         try {
-            OnLineExecutorService.taskForGetResult(requestParamsEntity.getRequestSeqId(), String.valueOf(merchantEntity.getId()));
+            OnLineExecutorService.getInstance().taskForGetResult(requestParamsEntity.getRequestSeqId(), String.valueOf(merchantEntity.getId()),merchantEntity.getId());
         } catch (Exception e) {
             logger.error("商户进件签约失败 merchantId:{},requestSeqId:{}", merchantEntity.getId(), requestParamsEntity.getRequestSeqId(), e);
         }
@@ -146,6 +146,11 @@ public class MerchantServiceImpl implements MerchantService {
             return Collections.EMPTY_LIST;
         }
 
+    }
+
+    @Override
+    public MerchantEntity getById(Long id) {
+        return merchantRespository.findById(id).get();
     }
 
     private IntoResponseResult merchantInto(ParamsEntity requestParamsEntity, MerchantEntity merchantEntity) {
