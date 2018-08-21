@@ -34,7 +34,9 @@
     <div style="margin-top: 20px;margin-bottom: 15px;">
         <div style="margin: 0 auto;text-align: center;" class="tc-darkgray"><h3>申请聚合支付</h3></div>
     </div>
-    <form class="form-horizontal" role="form" style="margin: 0 auto" method="post" action="apply" enctype="multipart/form-data">
+    <form class="form-horizontal" role="form" id="merchant_info_form" style="margin: 0 auto" method="post"
+          action="apply"
+          enctype="multipart/form-data">
         <div class="form-group">
             <label for="merchantNameShort" class="col-sm-2 control-label">名称</label>
             <div class="col-sm-10">
@@ -228,14 +230,17 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <!-- 传空 -->
+        <input type="hidden" value="" id="settleBankNo"
+               name="settleBankNo"/>
+        <!--<div class="form-group">
             <label for="settleBankNo" class="col-sm-2 control-label">结算银行编码</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="settleBankNo"
                        name="settleBankNo"
                        placeholder="请输入结算银行编码"/>
             </div>
-        </div>
+        </div>-->
 
         <div class="form-group">
             <label for="settleBankcardNo" class="col-sm-2 control-label">结算银行卡号</label>
@@ -282,9 +287,12 @@
             </div>
         </div>
 
+        <!-- 商户交易易结算周期  M 填“1” -->
+        <input type="hidden" value="1" name="merchantTxnSettlePeriod">
+
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default">提交</button>
+                <a id="checkform" class="btn btn-default">提交</a>
             </div>
         </div>
     </form>
@@ -297,17 +305,45 @@
             $(this).datetimepicker('hide');
         });
 
- /*       $('input[type=file]').on('change', function (event) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var $targetId = event.target.id;
-                var targetId = $targetId.replace("_" , "");
-                console.log(targetId);
-                $("#" + targetId).val(reader.result);
-                console.log(reader.result.length);
+        $("#checkform").on("click", function () {
+            //todo : 方便调试 手动赋值 后期清除
+            $("#identityCardUserName").val("程小洪");
+            $("#busiLicenseUserName").val("程小洪");
+            $("#settleBankcardUserName").val("程小洪");
+            var identityCardUserName = $("#identityCardUserName").val();
+            var busiLicenseUserName = $("#busiLicenseUserName").val();
+            var settleBankcardUserName = $("#settleBankcardUserName").val();
+
+            console.log(identityCardUserName);
+            console.log(busiLicenseUserName);
+            console.log(settleBankcardUserName);
+            if (identityCardUserName.length < 1 || identityCardUserName != busiLicenseUserName || busiLicenseUserName != settleBankcardUserName) {
+                alert("经营人身份证姓名、营业执照法人姓名与结算银行卡姓名值不可用或不一致");
+                return;
             }
-            reader.readAsDataURL(this.files[0])
-        });*/
+            //todo : 方便调试 手动赋值 后期清除
+            $("#contactPhone").val("18883789865");
+            $("#settlePhoneNo").val("18883789865");
+            var contactPhone = $("#contactPhone").val();
+            var settlePhoneNo = $("#settlePhoneNo").val();
+            if (contactPhone.length < 1 || contactPhone != settlePhoneNo) {
+                alert("经营者手机号与结算预留手机号值不可用或不一致");
+                return;
+            }
+
+            $("#merchant_info_form input").each(function () {
+                var current = $(this);
+                if (current.attr("type") == "hidden") {
+                    return true;
+                }
+                if (current.val().length < 1) {
+                    alert($(this).attr("placeholder"));
+                    return false;
+                }
+            })
+
+            $("#merchant_info_form").submit();
+        })
     })
 </script>
 </html>
