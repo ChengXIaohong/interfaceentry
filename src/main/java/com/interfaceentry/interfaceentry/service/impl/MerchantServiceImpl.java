@@ -191,7 +191,9 @@ public class MerchantServiceImpl implements MerchantService {
         for (MccCode mccCode : mccCodes) {
             //封装detail数据
             MccCodeDetailEntity mccCodeDetailEntity = mccIdMap.get(mccCode.getId());
-            mccCode.setMccCode(mccCodeDetailEntity.getCodeMcc());
+            if (mccCodeDetailEntity != null) {
+                mccCode.setMccCode(mccCodeDetailEntity.getCodeMcc());
+            }
             //父级菜单关系
             Long pId = mccCode.getPId();
             if (pId == null) {
