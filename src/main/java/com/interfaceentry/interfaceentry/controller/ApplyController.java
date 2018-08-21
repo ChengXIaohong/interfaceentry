@@ -164,6 +164,8 @@ public class ApplyController {
         byte[] idReversePicBuffer = new byte[(int) f.length()];
         idReversePicInput.read(idReversePicBuffer);
         idReversePicInput.close();
+        //操作完成后删除文件
+        f.delete();
         return Base64.getEncoder().encodeToString(idReversePicBuffer);
     }
 }
