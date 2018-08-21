@@ -280,9 +280,9 @@ public class MerchantServiceImpl implements MerchantService {
         //补充数据
         requestParamsEntity.setCreateAt(System.currentTimeMillis());
         requestParamsEntity.setUpdateAt(System.currentTimeMillis());
-//        requestParamsEntity.setCreateBy();
-//        requestParamsEntity.setUpdateBy();
-// requestParamsEntity.setBankCode();
+//      requestParamsEntity.setCreateBy();
+//      requestParamsEntity.setUpdateBy();
+//      requestParamsEntity.setBankCode();
 
         requestParamsEntity.setBankName(merchantEntity.getSettleBankName());
 
