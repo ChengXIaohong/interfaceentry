@@ -1,6 +1,7 @@
 package com.interfaceentry.interfaceentry.service;
 
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
+import com.interfaceentry.interfaceentry.service.model.MccCode;
 import com.interfaceentry.interfaceentry.service.model.SettleBankInfo;
 
 import java.util.List;
@@ -48,4 +49,5 @@ public interface MerchantService {
     List<SettleBankInfo> getSettleBankInfos(String bankName, String bankCode);
 
 
+    List<MccCode> getMccCode();
 }
