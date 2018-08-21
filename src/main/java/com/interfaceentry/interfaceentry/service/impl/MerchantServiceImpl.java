@@ -126,8 +126,8 @@ public class MerchantServiceImpl implements MerchantService {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("requestSystem", requestSystem);
         paramsMap.put("requestSeqId", requestSeqId);
-        paramsMap.put("bankName", bankName);//银⾏名称  M 例例如：“浦东”
-        paramsMap.put("bankCode", bankCode);// 银⾏行行编码  M 例例如：中国农业银⾏行行 ABC、中国银⾏行行 BOC
+        paramsMap.put("bankName", bankName);//银行名称  M 例例如：“浦东”
+        paramsMap.put("bankCode", bankCode);// 银行编码  M 例例如：中国农业银行 ABC、中国银行 BOC
         paramsMap.put("mac", mac);
         try {
             String data = JSON.toJSONString(paramsMap);
@@ -160,7 +160,7 @@ public class MerchantServiceImpl implements MerchantService {
         String provinceCode = merchantEntity.getProvinceCode();//省份编码  M 请⻅见《地区城市码.xlsx》
         String cityCode = merchantEntity.getCityCode();// 城市编码  M 请⻅见《地区城市码.xlsx》
         String businessAddress = merchantEntity.getBusinessAddress();// 营业地址  M
-        String mccCode = merchantEntity.getMccCode();//⾏行行业分类编码  M 请⻅见《⾏行行业类型码表.xlsx》
+        String mccCode = merchantEntity.getMccCode();//行业分类编码  M 请⻅见《行业类型码表.xlsx》
         String contactPhone = merchantEntity.getContactPhone();// 联系⼈人⼿手机号  M
         String identityCardUserName = merchantEntity.getIdentityCardUserName();// 身份证⽤用户姓名  M
         String identityCardNo = merchantEntity.getIdentityCardNo();//身份证件号  M
@@ -172,13 +172,13 @@ public class MerchantServiceImpl implements MerchantService {
         String licensePic = merchantEntity.getLicensePic();// 营业许可证图⽚片  M
         String storeInteriorPic = merchantEntity.getStoreInteriorPic();// 店铺内景照⽚  M
         String storeSignBoardPic = merchantEntity.getStoreSignBoardPic();// 店铺招牌照片  M
-        String settleBankName = merchantEntity.getSettleBankName();// 结算银⾏行行名称  M 通过银⾏行行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
-        String settleBankNo = merchantEntity.getSettleBankNo();//结算银⾏行行编码  M 请填写空字符串串，例例如：””
+        String settleBankName = merchantEntity.getSettleBankName();// 结算银行名称  M 通过银行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
+        String settleBankNo = merchantEntity.getSettleBankNo();//结算银行编码  M 请填写空字符串串，例例如：””
         String settleBankcardNo = merchantEntity.getSettleBankcardNo();//结算银⾏行行卡号  M
-        String settleBankcardUserName = merchantEntity.getSettleBankcardUserName();// 结算银⾏行行卡⽤用户姓名 M
-        String settleBankcardLineNumber = merchantEntity.getSettleBankcardLineNumb(); //银⾏行行卡联⾏行行号  M 通过银⾏行行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
-        String settleBankcardFinanceAreaCode = merchantEntity.getSettleBankcardFinanceAreaCode();//银⾏行行卡结算地区码  M 银⾏行行卡财务结算地区码，通过接口⼀一查询获得
-        String settlePhoneNo = merchantEntity.getSettlePhoneNo();// 银⾏行行预留留⼿手机号  M
+        String settleBankcardUserName = merchantEntity.getSettleBankcardUserName();// 结算银行卡⽤用户姓名 M
+        String settleBankcardLineNumber = merchantEntity.getSettleBankcardLineNumb(); //银行卡联行号  M 通过银行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
+        String settleBankcardFinanceAreaCode = merchantEntity.getSettleBankcardFinanceAreaCode();//银行卡结算地区码  M 银⾏行行卡财务结算地区码，通过接口⼀一查询获得
+        String settlePhoneNo = merchantEntity.getSettlePhoneNo();// 银行预留留⼿手机号  M
         String merchantTxnRate = merchantEntity.getMerchantTxnRate();// 商户签约交易易费率  M 单位：%
         String merchantTxnSettlePeriod = merchantEntity.getMerchantTxnSettlePeriod();// 商户交易易结算周期  M 填“1”
         String integrateLicense = merchantEntity.getLicenseType();//三证合⼀一照;
