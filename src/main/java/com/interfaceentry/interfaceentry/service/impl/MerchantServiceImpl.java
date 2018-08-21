@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import sun.security.provider.MD5;
 
+import javax.persistence.Column;
 import java.util.*;
 
 /**
@@ -151,7 +152,6 @@ public class MerchantServiceImpl implements MerchantService {
 
     private IntoResponseResult merchantInto(ParamsEntity requestParamsEntity, MerchantEntity merchantEntity) {
         IntoResponseResult intoResponseResult = new IntoResponseResult();
-        requestParamsRespository.save(requestParamsEntity);
         String merchantName = merchantEntity.getMerchantName();// 商户名称  M
         String businessScope = merchantEntity.getBusinessScope();// 营业范围  M
         String businessTerm = merchantEntity.getBusinessTerm();//营业期限  M 格式：yyyy - MM - dd，营业期限为⻓长期时，填：2199 - 12 - 31
@@ -276,6 +276,24 @@ public class MerchantServiceImpl implements MerchantService {
             return intoResponseResult;
         }
         intoResponseResult = JSONObject.parseObject(data, IntoResponseResult.class);
+        //保存请求数据
+        //补充数据
+        requestParamsEntity.setCreateAt(System.currentTimeMillis());
+        requestParamsEntity.setUpdateAt(System.currentTimeMillis());
+//        requestParamsEntity.setCreateBy();
+//        requestParamsEntity.setUpdateBy();
+// requestParamsEntity.setBankCode();
+
+        requestParamsEntity.setBankName(merchantEntity.getSettleBankName());
+
+
+        requestParamsEntity.setMerchantId(merchantEntity.getId());
+        requestParamsEntity.setResponseResult(data);
+
+
+        requestParamsRespository.save(requestParamsEntity);
+
+
         return intoResponseResult;
     }
 
