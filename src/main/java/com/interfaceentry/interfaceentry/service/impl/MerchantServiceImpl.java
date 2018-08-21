@@ -3,13 +3,18 @@ package com.interfaceentry.interfaceentry.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.interfaceentry.interfaceentry.dao.MccCodeDetailRespository;
+import com.interfaceentry.interfaceentry.dao.MccCodeRespository;
 import com.interfaceentry.interfaceentry.dao.MerchantRespository;
 import com.interfaceentry.interfaceentry.dao.RequestParamsRespository;
+import com.interfaceentry.interfaceentry.entity.MccCodeDetailEntity;
+import com.interfaceentry.interfaceentry.entity.MccCodeEntity;
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
 import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
 import com.interfaceentry.interfaceentry.service.RequestParamsService;
 import com.interfaceentry.interfaceentry.service.model.IntoResponseResult;
+import com.interfaceentry.interfaceentry.service.model.MccCode;
 import com.interfaceentry.interfaceentry.service.model.SettleBankInfo;
 import com.interfaceentry.interfaceentry.tools.AppMD5Util;
 import com.interfaceentry.interfaceentry.tools.Constants;
@@ -19,9 +24,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 商户service实现
@@ -44,6 +52,12 @@ public class MerchantServiceImpl implements MerchantService {
     private RequestParamsRespository requestParamsRespository;
     @Autowired
     private RequestParamsService requestParamsService;
+
+    @Autowired
+    private MccCodeRespository mccCodeRespository;
+    @Autowired
+    private MccCodeDetailRespository mccCodeDetailRespository;
+
 
     @Override
     public MerchantEntity saveOrUpdate(MerchantEntity merchantEntity) {
@@ -146,6 +160,59 @@ public class MerchantServiceImpl implements MerchantService {
             return Collections.EMPTY_LIST;
         }
 
+    }
+
+    @Override
+    public List<MccCode> getMccCode() {
+        List<MccCodeEntity> mccCodeEntities = mccCodeRespository.findListByStateTrue();
+        if (CollectionUtils.isEmpty(mccCodeEntities)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        Set<Long> mccIds = mccCodeEntities.stream().map(MccCodeEntity::getId).collect(Collectors.toSet());
+        List<MccCodeDetailEntity> mccCodeDetailEntities = mccCodeDetailRespository.findListByMccIdInAndStateTrue(mccIds);
+        Map<Long, MccCodeDetailEntity> mccIdMap = new HashMap<>();
+        if (!CollectionUtils.isEmpty(mccCodeDetailEntities)) {
+            mccIdMap = mccCodeDetailEntities.stream().collect(Collectors.toMap(MccCodeDetailEntity::getMccId, Function.identity(), (o, n) -> o));
+        }
+
+        //转换对象
+        List<MccCode> mccCodes = mccCodeEntities.stream().map(o -> {
+            MccCode mccCode = new MccCode();
+            mccCode.setId(o.getId());
+            mccCode.setName(o.getName());
+            mccCode.setPId(o.getPId());
+            // mccCode.setMccCode();
+            return mccCode;
+        }).collect(Collectors.toList());
+
+        Map<Long, MccCode> idMccMap = mccCodes.stream().collect(Collectors.toMap(MccCode::getId, Function.identity(), (o, n) -> o));
+        List<MccCode> result = new ArrayList<>();
+        for (MccCode mccCode : mccCodes) {
+            //封装detail数据
+            MccCodeDetailEntity mccCodeDetailEntity = mccIdMap.get(mccCode.getId());
+            if (mccCodeDetailEntity != null) {
+                mccCode.setMccCode(mccCodeDetailEntity.getCodeMcc());
+            }
+            //父级菜单关系
+            Long pId = mccCode.getPId();
+            if (pId == null) {
+                result.add(mccCode);
+                continue;
+            }
+            MccCode mccCode1 = idMccMap.get(pId);
+            if (mccCode1 == null) {
+                continue;
+            }
+
+            List<MccCode> children = mccCode1.getChildren();
+            if (children == null) {
+                children = new ArrayList<>();
+                mccCode1.setChildren(children);
+            }
+            children.add(mccCode);
+        }
+        return result;
     }
 
     @Override

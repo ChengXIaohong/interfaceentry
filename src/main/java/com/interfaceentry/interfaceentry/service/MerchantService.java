@@ -1,6 +1,7 @@
 package com.interfaceentry.interfaceentry.service;
 
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
+import com.interfaceentry.interfaceentry.service.model.MccCode;
 import com.interfaceentry.interfaceentry.service.model.SettleBankInfo;
 
 import java.util.List;
@@ -55,4 +56,5 @@ public interface MerchantService {
     MerchantEntity getById(Long id);
 
 
+    List<MccCode> getMccCode();
 }

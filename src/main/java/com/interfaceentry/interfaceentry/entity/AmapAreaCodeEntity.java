@@ -28,5 +28,4 @@ public class AmapAreaCodeEntity {
     //区号
     private String areaCode;
 
-
 }

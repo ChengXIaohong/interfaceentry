@@ -3,6 +3,7 @@ package com.interfaceentry.interfaceentry.controller;
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
 import com.interfaceentry.interfaceentry.service.RequestParamsService;
+import com.interfaceentry.interfaceentry.service.model.MccCode;
 import com.interfaceentry.interfaceentry.service.model.SettleBankInfo;
 import com.interfaceentry.interfaceentry.tools.Constants;
 import com.interfaceentry.interfaceentry.tools.FileTools;
@@ -167,6 +168,16 @@ public class ApplyController extends FinalExceptionHandler {
         //操作完成后删除文件
         f.delete();
         return Base64.getEncoder().encodeToString(idReversePicBuffer);
+    }
+
+
+    /**
+     * 获取Mcc
+     */
+    @RequestMapping("/getMccCode")
+    @ResponseBody
+    public List<MccCode> getMccCode() {
+        return merchantService.getMccCode();
     }
     @RequestMapping("/lunxuntest")
     @ResponseBody
