@@ -4,11 +4,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-/***
- *
- * @author wangrx
- * @date 2018-01-15
- */
 @Entity
 @Table(name = "amap_area_code")
 @Data

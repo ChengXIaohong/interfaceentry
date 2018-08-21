@@ -8,8 +8,6 @@ import java.util.Map;
 
 /***
  *高德行政区域相关API
- * @author xiongchuang
- * @date 2018-01-15
  */
 public interface AmapAreaCodeService {
     AmapAreaCodeEntity save(AmapAreaCodeEntity amapAreaCode);
