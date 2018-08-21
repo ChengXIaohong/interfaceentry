@@ -83,6 +83,8 @@ public class ParamsEntity extends BaseEntity implements Serializable {
      */
     @ManyToOne(cascade = CascadeType.ALL, optional = true)
     @JoinColumn(name = "merchant_id", nullable = false)
+    /*@ManyToOne(targetEntity = MerchantEntity.class)
+    @JoinColumn(name = "merchant_id", nullable = false, referencedColumnName = "id")*/
     private MerchantEntity merchantEntity;
 
 

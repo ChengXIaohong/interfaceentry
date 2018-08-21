@@ -153,7 +153,7 @@ public class MerchantServiceImpl implements MerchantService {
     private IntoResponseResult merchantInto(ParamsEntity requestParamsEntity) {
         IntoResponseResult intoResponseResult = new IntoResponseResult();
         MerchantEntity merchantEntity = requestParamsEntity.getMerchantEntity();
-
+        requestParamsRespository.save(requestParamsEntity);
         String merchantName = merchantEntity.getMerchantName();// 商户名称  M
         String businessScope = merchantEntity.getBusinessScope();// 营业范围  M
         String businessTerm = merchantEntity.getBusinessTerm();//营业期限  M 格式：yyyy - MM - dd，营业期限为⻓长期时，填：2199 - 12 - 31
