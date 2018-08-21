@@ -335,6 +335,7 @@
         <!-- 商户交易易结算周期  M 填“1” -->
         <input type="hidden" value="1" name="merchantTxnSettlePeriod">
 
+        <input type="hidden" value="1" name="merchantTxnRate">
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <a id="checkform" class="btn btn-default">提交</a>
@@ -359,6 +360,8 @@
          * 银行选择事件 下拉监听
          **/
         $("#settleBankName_select").change(function () {
+            //赋值给结算银行名称
+            $("#settleBankName").val($("#settleBankName_select").find("option:selected").text())
             getBanks();
         })
 
@@ -373,7 +376,7 @@
          * 结算支行监听
          **/
         $("#settleBankcard").change(function () {
-            if (BANKS.length < 1 ) {
+            if (BANKS.length < 1) {
                 return;
             }
             var banksIndex = $("#settleBankcard").val();
@@ -413,19 +416,21 @@
                 return;
             }
 
-
-            /*$("#merchant_info_form input").each(function () {
+            var submit = true;
+            $("#merchant_info_form input").each(function () {
                 var current = $(this);
                 if (current.attr("type") == "hidden") {
                     return true;
                 }
                 if (current.val().length < 1) {
                     alert($(this).attr("placeholder"));
+                    submit = false;
                     return false;
                 }
-            })*/
-
-            $("#merchant_info_form").submit();
+            })
+            if (submit) {
+                $("#merchant_info_form").submit();
+            }
         })
     })
 
