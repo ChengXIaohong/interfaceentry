@@ -12,6 +12,7 @@ public interface RequestParamsService {
 
     /**
      * 增加请求对象
+     *
      * @param requestParamsEntity
      * @return
      */
@@ -19,6 +20,7 @@ public interface RequestParamsService {
 
     /**
      * 得到一个代参数实例
+     *
      * @return
      */
     ParamsEntity getParamsInstance();

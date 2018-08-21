@@ -1,13 +1,13 @@
 package com.interfaceentry.interfaceentry.entity;
 
-import com.interfaceentry.interfaceentry.service.model.DynamicParams;
-import com.interfaceentry.interfaceentry.tools.Constants;
-import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * 请求携带的数据

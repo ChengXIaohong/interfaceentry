@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author chengxiaohong coax@outlook.it
  * @create 2018-08-20 14:56
  **/
-@ConfigurationProperties(prefix="kdypay.config")
+@ConfigurationProperties(prefix = "kdypay.config")
 @Data
 @NoArgsConstructor
 @Component

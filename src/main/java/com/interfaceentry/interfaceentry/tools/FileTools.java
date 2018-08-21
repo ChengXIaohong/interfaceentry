@@ -14,6 +14,7 @@ import java.io.OutputStream;
 public class FileTools {
     /**
      * inputStream转File
+     *
      * @param ins
      * @param file
      */

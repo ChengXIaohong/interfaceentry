@@ -11,6 +11,6 @@ import java.util.List;
  * @author chengxiaohong coax@outlook.it
  * @create 2018-08-17 14:41
  **/
-public interface MerchantRespository extends CrudRepository<MerchantEntity , Long> {
+public interface MerchantRespository extends CrudRepository<MerchantEntity, Long> {
     List<MerchantEntity> findBySubmissionStatusEquals(String status);
 }

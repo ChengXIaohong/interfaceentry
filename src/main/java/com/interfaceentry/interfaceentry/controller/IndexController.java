@@ -17,15 +17,16 @@ public class IndexController {
 
     /**
      * 首页
+     *
      * @return
      */
     @RequestMapping("/")
-    public Map<String,Object> index(){
-        Map<String,Object> ret = new HashMap<>(4);
-        ret.put("title","index");
-        ret.put("status","success");
-        ret.put("state",Boolean.TRUE);
-        ret.put("content","index is building");
+    public Map<String, Object> index() {
+        Map<String, Object> ret = new HashMap<>(4);
+        ret.put("title", "index");
+        ret.put("status", "success");
+        ret.put("state", Boolean.TRUE);
+        ret.put("content", "index is building");
         return ret;
     }
 

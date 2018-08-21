@@ -14,10 +14,9 @@ public class SSLContextUtil {
 
     /**
      * 获得SSLSocketFactory.
-     * @param keyStorePath
-     *            密钥库路径
-     * @param password
-     *            密码
+     *
+     * @param keyStorePath 密钥库路径
+     * @param password     密码
      * @return SSLSocketFactory
      * @throws Exception
      */
@@ -43,10 +42,9 @@ public class SSLContextUtil {
 
     /**
      * 获得KeyStore.
-     * @param keyStorePath
-     *            密钥库路径
-     * @param password
-     *            密码
+     *
+     * @param keyStorePath 密钥库路径
+     * @param password     密码
      * @return 密钥库
      * @throws Exception
      */
