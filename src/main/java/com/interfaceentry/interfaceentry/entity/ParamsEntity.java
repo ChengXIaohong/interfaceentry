@@ -3,6 +3,7 @@ package com.interfaceentry.interfaceentry.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "request_record")
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class ParamsEntity extends BaseEntity implements Serializable {
     //=============请求基础参数 参数 START

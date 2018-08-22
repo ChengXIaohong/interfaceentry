@@ -23,7 +23,7 @@ import java.util.Map;
 public class FinalExceptionHandler{
 
     /**
-     * 通用异常处理
+     * 全局异常处理
      * @param t
      * @param request
      * @param response

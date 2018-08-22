@@ -42,7 +42,7 @@ public class MerchantServiceImpl implements MerchantService {
     private Logger logger = LoggerFactory.getLogger(MerchantServiceImpl.class);
     //申请平台商商户进件
     private static String INTO_URL = "/mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
-    //申请平台商商户进件
+    //获取银行信息
     private static String GET_BANK_INFOS = "/mapi/o2o/personalstore/platformMerchantService/getSettleBankInfos";
 
 
@@ -121,7 +121,7 @@ public class MerchantServiceImpl implements MerchantService {
         }
         //签约
         try {
-            OnLineExecutorService.getInstance().taskForGetResult(requestParamsEntity.getRequestSeqId(), String.valueOf(merchantEntity.getId()),merchantEntity.getId());
+            OnLineExecutorService.getInstance().taskForGetResult(requestParamsEntity.getRequestSeqId(), String.valueOf(merchantEntity.getId()));
         } catch (Exception e) {
             logger.error("商户进件签约失败 merchantId:{},requestSeqId:{}", merchantEntity.getId(), requestParamsEntity.getRequestSeqId(), e);
         }
@@ -213,6 +213,33 @@ public class MerchantServiceImpl implements MerchantService {
             children.add(mccCode);
         }
         return result;
+    }
+
+    @Override
+    public Boolean yzfSubmitionCallBack(String json) {
+        JSONObject answerModel = JSON.parseObject(json);
+        JSONObject signStatusResult = answerModel.getJSONObject("result");
+        String signStatus = signStatusResult.get("signStatus").toString();
+        String signStatusDesc = signStatusResult.get("signStatusDesc").toString();
+        Boolean success = answerModel.getBoolean("success");
+        Long mmerchantId = signStatusResult.getLong("merchantNo");
+        MerchantEntity merchantEntity = merchantRespository.findById(mmerchantId).get();
+
+        if (null != merchantEntity) {
+            merchantEntity.setSignStatus(success);
+            merchantEntity.setSubmissionStatus(success ? Constants.SubmitionStatus.YZFSH_PASS.name() : Constants.SubmitionStatus.YZFSH_REJ.name());
+            this.saveOrUpdate(merchantEntity);
+        }
+
+        ParamsEntity paramsEntity = requestParamsRespository.findFirstByMerchantIdEqualsOrderByIdDesc(mmerchantId);
+
+        if (null != paramsEntity) {
+            paramsEntity.setSignStatusDesc(signStatusDesc);
+            paramsEntity.setSignStatus(signStatus);
+            requestParamsRespository.save(paramsEntity);
+        }
+
+        return Boolean.TRUE;
     }
 
     @Override
@@ -356,14 +383,10 @@ public class MerchantServiceImpl implements MerchantService {
 
         requestParamsEntity.setBankName(merchantEntity.getSettleBankName());
 
-
         requestParamsEntity.setMerchantId(merchantEntity.getId());
         requestParamsEntity.setResponseResult(data);
 
-
         requestParamsRespository.save(requestParamsEntity);
-
-
         return intoResponseResult;
     }
 

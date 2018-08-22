@@ -11,14 +11,13 @@ import com.interfaceentry.interfaceentry.tools.OnLineExecutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -179,4 +178,48 @@ public class ApplyController extends FinalExceptionHandler {
     public List<MccCode> getMccCode() {
         return merchantService.getMccCode();
     }
+
+    /**
+     * 获取Mcc
+     */
+    @RequestMapping("/lunxun")
+    @ResponseBody
+    public Boolean lunxun(@RequestParam(name = "requestSeqId", required = true) String requestSeqId, @RequestParam(name = "merchantNo", required = true) String merchantNo) {
+        OnLineExecutorService.getInstance().taskForGetResult(requestSeqId, merchantNo);
+        return Boolean.TRUE;
+    }
+
+    @RequestMapping("/kadpay/submition/callBack")
+    @ResponseBody
+    public Map<String, Object> submitCallBack(HttpServletRequest request) {
+
+        String json = this.getStreamAsString(request);
+
+        Boolean success = merchantService.yzfSubmitionCallBack(json);
+
+        Map<String, Object> ret = new HashMap<>(1);
+        ret.put("success", Boolean.TRUE);
+        ret.put("errorCode", "000000");
+        ret.put("errorMsg", "成功接收申请回调信息");
+        ret.put("result", "SUCCESS");
+        return ret;
+    }
+
+    private String getStreamAsString(HttpServletRequest request) {
+
+        StringBuffer sb = new StringBuffer();
+        try {
+            InputStream is = request.getInputStream();
+            InputStreamReader ins = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(ins);
+            String s = "";
+            while ((s = br.readLine()) != null) {
+                sb.append(s);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
 }

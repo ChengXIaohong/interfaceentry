@@ -34,7 +34,6 @@ public class OnLineExecutorService {
     @Resource
     private MerchantServiceImpl merchantService;
 
-
     private static OnLineExecutorService instance;
 
     @PostConstruct
@@ -57,35 +56,49 @@ public class OnLineExecutorService {
      * @param requestSeqId
      * @param merchantNo
      */
-    public void taskForGetResult(String requestSeqId, String merchantNo, Long merchantId) {
+    public void taskForGetResult(String requestSeqId, String merchantNo) {
         Timer timer = new Timer();
         timerContainer.put(requestSeqId, timer);
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-
                 String result = OnLineExecutorService.getInstance().getSubmitResultOnece(requestSeqId, merchantNo);
-
+                log.info(result);
+                Boolean cancel = false;
                 //判断结果
                 if (!StringUtils.isEmpty(result)) {
                     JSONObject answerModel = JSON.parseObject(result);
                     JSONObject signStatusResult = answerModel.getJSONObject("result");
-                    if (signStatusResult.get("signStatus").equals("FAILURE")) {
-                        OnLineExecutorService.getInstance().signStatusCall(requestSeqId, merchantId, signStatusResult.get("signStatus").toString(), signStatusResult.get("signStatusDesc").toString(),Boolean.FALSE);
-                    } else {
-                        OnLineExecutorService.getInstance().signStatusCall(requestSeqId, merchantId, signStatusResult.get("signStatus").toString(), signStatusResult.get("signStatusDesc").toString(),Boolean.TRUE);
-
+                    String signStatus = signStatusResult.get("signStatus").toString();
+                    if (signStatus.equals("FAILURE")) {
+                        OnLineExecutorService.getInstance().signStatusCall(requestSeqId, Long.parseLong(merchantNo), signStatus, signStatusResult.get("signStatusDesc").toString(), Boolean.FALSE);
+                        cancel = true;
+                    } else if ("SUCCESS".equals(signStatus)) {
+                        OnLineExecutorService.getInstance().signStatusCall(requestSeqId, Long.parseLong(merchantNo), signStatus, signStatusResult.get("signStatusDesc").toString(), Boolean.TRUE);
+                        cancel = true;
+                    } else if ("SIGNING".equals(signStatus) || "UNKONW".equals(signStatus)) {
+                        cancel = false;
                     }
-                    timerContainer.get(requestSeqId).cancel();
-                    timerContainer.remove(requestSeqId);
+                    //本次结果为未知或者签约中 继续下次轮询
+                    if (cancel) {
+                        OnLineExecutorService.getInstance().stopTackByRequestSeqId(requestSeqId);
+                    }
+
                 } else {
                     log.info("未获取到结果，等下次轮询");
                 }
             }
         };
 
-        long delay = 0;
-        long intevalPeriod = /*5 * 60 * */1000;
+        /**
+         * 延迟5分钟启动
+         */
+        long delay = 5 * 60 * 1000;
+
+        /**
+         *每五分钟执行一次
+         */
+        long intevalPeriod = 5 * 60 * 1000;
         timer.scheduleAtFixedRate(task, delay, intevalPeriod);
     }
 
@@ -114,7 +127,7 @@ public class OnLineExecutorService {
      * @param merchanrId   商户唯一标识
      * @return
      */
-    private void signStatusCall(String requestSeqId, Long merchanrId, String signStatus, String signStatusDesc,Boolean success) {
+    private void signStatusCall(String requestSeqId, Long merchanrId, String signStatus, String signStatusDesc, Boolean success) {
         ParamsEntity paramsEntity = requestParamsService.getParamsByRequestSeqId(requestSeqId);
         paramsEntity.setSignStatus(signStatus);
         paramsEntity.setSignStatusDesc(signStatusDesc);
@@ -122,9 +135,21 @@ public class OnLineExecutorService {
 
         MerchantEntity merchantEntity = merchantService.getById(merchanrId);
         merchantEntity.setSignStatus(success);
+        merchantEntity.setSubmissionStatus(success ? Constants.SubmitionStatus.YZFSH_PASS.name() : Constants.SubmitionStatus.YZFSH_REJ.name());
         merchantEntity.setUpdateAt(System.currentTimeMillis());
         merchantService.saveOrUpdate(merchantEntity);
-
     }
 
+    public Boolean stopTackByRequestSeqId(String requestSeqId) {
+        Timer timerForReqId = timerContainer.get(requestSeqId);
+        if (null != timerForReqId) {
+            timerForReqId.cancel();
+            timerContainer.remove(requestSeqId);
+        }
+        return Boolean.TRUE;
+    }
+
+    public Boolean taksIsEmpty(String requestSeqId) {
+        return null != OnLineExecutorService.timerContainer.get(requestSeqId);
+    }
 }

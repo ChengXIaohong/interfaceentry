@@ -67,7 +67,7 @@
         <div class="form-group">
             <label for="businessTerm" class="col-sm-2 control-label">营业期限</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control form_datetime tc-darkgray" id="businessTerm"
+                <input type="text" class="form-control form_datetime tc-darkgray datetimepicker" readonly id="businessTerm"
                        name="businessTerm"
                        placeholder="请选择营业期限">
             </div>
@@ -357,9 +357,14 @@
     var BANKS;
     $(function () {
 
-        //时间控件初始化
-        $("#businessTerm").datetimepicker({language: 'zh', format: 'yyyy-mm-dd'}).on('changeDate', function (ev) {
-            $(this).datetimepicker('hide');
+        $('#businessTerm').datetimepicker({
+            format: 'yyyy-mm-dd',//显示格式
+            todayHighlight: 1,//今天高亮
+            minView: "month",//设置只显示到月份
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 1,
+            autoclose: 1//选择后自动关闭
         });
 
         /**

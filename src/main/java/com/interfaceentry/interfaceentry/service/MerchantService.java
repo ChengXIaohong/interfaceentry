@@ -57,4 +57,11 @@ public interface MerchantService {
 
 
     List<MccCode> getMccCode();
+
+    /**
+     * 读取申请回调信息
+     * @param json
+     * @return
+     */
+    Boolean yzfSubmitionCallBack(String json);
 }
