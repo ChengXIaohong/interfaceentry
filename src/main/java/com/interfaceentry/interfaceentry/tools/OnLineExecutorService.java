@@ -93,7 +93,7 @@ public class OnLineExecutorService {
         /**
          * 延迟5分钟启动
          */
-        long delay = 5 * 60 * 1000;
+        long delay = 0;
 
         /**
          *每五分钟执行一次
@@ -101,8 +101,6 @@ public class OnLineExecutorService {
         long intevalPeriod = 5 * 60 * 1000;
         timer.scheduleAtFixedRate(task, delay, intevalPeriod);
     }
-
-    //fixme:参数不完整
 
     /**
      * 请求申请结果

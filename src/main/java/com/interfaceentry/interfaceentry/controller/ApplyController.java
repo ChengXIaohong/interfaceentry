@@ -10,6 +10,7 @@ import com.interfaceentry.interfaceentry.tools.FileTools;
 import com.interfaceentry.interfaceentry.tools.OnLineExecutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -105,13 +106,17 @@ public class ApplyController extends FinalExceptionHandler {
      */
     @RequestMapping("/updateStatus")
     @ResponseBody
-    public String updateStatus(Long id, String submissionStatus) {
+    public Map<String, String> updateStatus(Long id, String submissionStatus) {
+        Map ret = new HashMap<>();
+        String retCode;
         if (Constants.SubmitionStatus.YZFSH_ING.name().equals(submissionStatus)) {
             merchantService.submiToYZHSH(id);
-            return merchantService.updateSubmissionStatusById(id, submissionStatus);
+            retCode = merchantService.updateSubmissionStatusById(id, submissionStatus);
         } else {
-            return merchantService.updateSubmissionStatusById(id, submissionStatus);
+            retCode = merchantService.updateSubmissionStatusById(id, submissionStatus);
         }
+        ret.put("resultCode", retCode);
+        return ret;
     }
 
 
@@ -169,6 +174,16 @@ public class ApplyController extends FinalExceptionHandler {
         return Base64.getEncoder().encodeToString(idReversePicBuffer);
     }
 
+    /**
+     * 获取轮询
+     */
+    @RequestMapping("/lunxun")
+    @ResponseBody
+    public Boolean lunxun(@RequestParam(name = "requestSeqId", required = true) String requestSeqId, @RequestParam(name = "merchantNo", required = true) String merchantNo) {
+        OnLineExecutorService.getInstance().taskForGetResult(requestSeqId, merchantNo);
+        return Boolean.TRUE;
+    }
+
 
     /**
      * 获取Mcc
@@ -179,29 +194,32 @@ public class ApplyController extends FinalExceptionHandler {
         return merchantService.getMccCode();
     }
 
-    /**
-     * 获取Mcc
-     */
-    @RequestMapping("/lunxun")
-    @ResponseBody
-    public Boolean lunxun(@RequestParam(name = "requestSeqId", required = true) String requestSeqId, @RequestParam(name = "merchantNo", required = true) String merchantNo) {
-        OnLineExecutorService.getInstance().taskForGetResult(requestSeqId, merchantNo);
-        return Boolean.TRUE;
-    }
-
-    @RequestMapping("/kadpay/submition/callBack")
+    @RequestMapping("/kdypay/submition/callBack")
     @ResponseBody
     public Map<String, Object> submitCallBack(HttpServletRequest request) {
 
+        Map<String, Object> ret = new HashMap<>();
+        Map<String, Object> retCode = new HashMap<>();
+
         String json = this.getStreamAsString(request);
 
-        Boolean success = merchantService.yzfSubmitionCallBack(json);
+        if (StringUtils.isEmpty(json)) {
+            ret.put("success", Boolean.FALSE);
+            ret.put("errorCode", "000001");
+            ret.put("errorMsg", "请求消息无效");
+            retCode.put("statuscode", "FAIL");
+            ret.put("result", retCode);
+            return ret;
+        }
 
-        Map<String, Object> ret = new HashMap<>(1);
+        //回调逻辑处理
+        merchantService.yzfSubmitionCallBack(json);
+
         ret.put("success", Boolean.TRUE);
         ret.put("errorCode", "000000");
         ret.put("errorMsg", "成功接收申请回调信息");
-        ret.put("result", "SUCCESS");
+        retCode.put("statuscode", "SUCCESS");
+        ret.put("result", retCode);
         return ret;
     }
 

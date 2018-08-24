@@ -27,12 +27,12 @@
             color: darkgray;
         }
     </style>
-    <title>申请聚合支付</title>
+    <title>申请聚合支付-基础信息修改</title>
 </head>
 <body>
 <div style="width:80%;margin: 0 auto;border: bisque 1px solid;border-radius:25px; margin-top:10px;">
     <div style="margin-top: 20px;margin-bottom: 15px;">
-        <div style="margin: 0 auto;text-align: center;" class="tc-darkgray"><h3>申请聚合支付</h3></div>
+        <div style="margin: 0 auto;text-align: center;" class="tc-darkgray"><h3>申请聚合支付-基础信息修改</h3></div>
     </div>
     <form class="form-horizontal" role="form" id="merchant_info_form" style="margin: 0 auto" method="post"
           action="apply"
@@ -40,7 +40,8 @@
         <div class="form-group">
             <label for="merchantNameShort" class="col-sm-2 control-label">名称</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="merchantName" name="merchantName"
+                <input type="text" class="form-control" id="merchantName" th:value="${merchantInfo.merchantNameShort}"
+                       name="merchantName"
                        placeholder="请输入名称">
             </div>
         </div>
@@ -48,6 +49,7 @@
             <label for="merchantNameShort" class="col-sm-2 control-label">简称</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="merchantNameShort" name="merchantNameShort"
+                       th:value="${merchantInfo.merchantNameShort}"
                        placeholder="请输入简称">
             </div>
         </div>
@@ -55,6 +57,7 @@
             <label for="businessScope" class="col-sm-2 control-label">营业范围</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="businessScope" name="businessScope"
+                       th:value="${merchantInfo.businessScope}"
                        placeholder="请输入营业范围">
             </div>
             <!--<div class="col-sm-10">
@@ -67,7 +70,9 @@
         <div class="form-group">
             <label for="businessTerm" class="col-sm-2 control-label">营业期限</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control form_datetime tc-darkgray datetimepicker" readonly id="businessTerm"
+                <input type="text" class="form-control form_datetime tc-darkgray datetimepicker" readonly
+                       th:value="${merchantInfo.businessTerm}"
+                       id="businessTerm"
                        name="businessTerm"
                        placeholder="请选择营业期限">
             </div>
@@ -101,6 +106,7 @@
             <label for="businessAddress" class="col-sm-2 control-label">营业地址</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="businessAddress"
+                       th:value="${merchantInfo.businessAddress}"
                        name="businessAddress"
                        placeholder="请输入营业地址">
             </div>
@@ -109,7 +115,7 @@
         <div class="form-group">
             <label for="mccCode" class="col-sm-2 control-label">行业编码</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control tc-darkgray" id="mccCode"
+                <input type="text" class="form-control tc-darkgray" id="mccCode" th:value="${merchantInfo.mccCode}"
                        name="mccCode"
                        placeholder="请输入行业编码">
             </div>
@@ -119,6 +125,7 @@
             <label for="contactPhone" class="col-sm-2 control-label">手机号码</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="contactPhone"
+                       th:value="${merchantInfo.contactPhone}"
                        name="contactPhone"
                        placeholder="请输入手机号码">
             </div>
@@ -128,6 +135,7 @@
             <label for="identityCardUserName" class="col-sm-2 control-label">证件姓名</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="identityCardUserName"
+                       th:value="${merchantInfo.identityCardUserName}"
                        name="identityCardUserName"
                        placeholder="请输入证件姓名">
             </div>
@@ -137,31 +145,9 @@
             <label for="identityCardNo" class="col-sm-2 control-label">证件号码</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="identityCardNo"
+                       th:value="${merchantInfo.identityCardNo}"
                        name="identityCardNo"
                        placeholder="请输入证件号码">
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <label for="_identityCardFrontPic" class="col-sm-2 control-label">身份证正面</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control tc-darkgray" id="_identityCardFrontPic"
-                       name="_identityCardFrontPic"
-                       placeholder="请选择身份证正面图片" accept="image/png,image/jpeg"/>
-                <!--<input type="hidden" id="identityCardFrontPic"
-                       name="identityCardFrontPic"/>-->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="_identityCardReversePic" class="col-sm-2 control-label">身份证反面</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control tc-darkgray" id="_identityCardReversePic"
-                       name="_identityCardReversePic"
-                       placeholder="请选择身份证反面图片" accept="image/png,image/jpeg"/>
-                <!--<input type="hidden" id="identityCardReversePic"
-                       name="identityCardReversePic"/>-->
             </div>
         </div>
 
@@ -169,6 +155,7 @@
             <label for="busiLicenseNo" class="col-sm-2 control-label">营业执照号</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="busiLicenseNo"
+                       th:value="${merchantInfo.busiLicenseNo}"
                        name="busiLicenseNo"
                        placeholder="请输入营业执照号"/>
             </div>
@@ -178,6 +165,7 @@
             <label for="busiLicenseUserName" class="col-sm-2 control-label">执照用户名</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="busiLicenseUserName"
+                       th:value="${merchantInfo.busiLicenseUserName}"
                        name="busiLicenseUserName"
                        placeholder="请输入营业执照用户名"/>
             </div>
@@ -191,39 +179,6 @@
                     <option class="tc-darkgray" value="businessLicense">营业执照</option>
                     <option class="tc-darkgray" value="integrateLicense">三证合一照</option>
                 </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="_licensePic" class="col-sm-2 control-label">许可证照片</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control tc-darkgray" id="_licensePic"
-                       name="_licensePic"
-                       placeholder="请选择营业许可证照片" accept="image/png,image/jpeg"/>
-                <!--<input type="hidden" id="licensePic"
-                       name="licensePic"/>-->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="_storeInteriorPic" class="col-sm-2 control-label">店铺内景</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control tc-darkgray" id="_storeInteriorPic"
-                       name="_storeInteriorPic"
-                       placeholder="请选择店铺内景照片" accept="image/png,image/jpeg"/>
-                <!--<input type="hidden" id="storeInteriorPic"
-                       name="storeInteriorPic"/>-->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="_storeSignBoardPic" class="col-sm-2 control-label">营业招牌</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control tc-darkgray" id="_storeSignBoardPic"
-                       name="_storeSignBoardPic"
-                       placeholder="请选择营业招牌照片" accept="image/png,image/jpeg"/>
-                <!--<input type="hidden" id="storeSignBoardPic"
-                       name="storeSignBoardPic"/>-->
             </div>
         </div>
 
@@ -297,6 +252,7 @@
             <label for="settleBankcardNo" class="col-sm-2 control-label">结算银行卡号</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="settleBankcardNo"
+                       th:value="${merchantInfo.settleBankcardNo}"
                        name="settleBankcardNo"
                        placeholder="请输入结算银行卡号"/>
             </div>
@@ -306,6 +262,7 @@
             <label for="settleBankcardUserName" class="col-sm-2 control-label">结算卡用户名</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="settleBankcardUserName"
+                       th:value="${merchantInfo.settleBankcardUserName}"
                        name="settleBankcardUserName"
                        placeholder="请输入结算银行卡用户姓名"/>
             </div>
@@ -315,6 +272,7 @@
             <label for="settleBankcardLineNumb" class="col-sm-2 control-label">银行卡联行号</label>
             <div class="col-sm-10">
                 <input type="text" readonly class="form-control tc-darkgray" id="settleBankcardLineNumb"
+                       th:value="${merchantInfo.settleBankcardLineNumb}"
                        name="settleBankcardLineNumb"
                        placeholder="请输入结算银行卡联行号"/>
             </div>
@@ -324,6 +282,7 @@
             <label for="settleBankcardFinanceAreaCode" class="col-sm-2 control-label">银行卡结算地区码</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" readonly id="settleBankcardFinanceAreaCode"
+                       th:value="${merchantInfo.settleBankcardFinanceAreaCode}"
                        name="settleBankcardFinanceAreaCode"
                        placeholder="请输入银行卡结算地区码"/>
             </div>
@@ -333,6 +292,7 @@
             <label for="settlePhoneNo" class="col-sm-2 control-label">预留手机</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="settlePhoneNo"
+                       th:value="${merchantInfo.settlePhoneNo}"
                        name="settlePhoneNo"
                        placeholder="请输入银行卡预留手机"/>
             </div>
@@ -406,9 +366,9 @@
 
         $("#checkform").on("click", function () {
             //todo : 方便调试 手动赋值 后期清除
-            /*$("#identityCardUserName").val("程小洪");
+            $("#identityCardUserName").val("程小洪");
             $("#busiLicenseUserName").val("程小洪");
-            $("#settleBankcardUserName").val("程小洪");*/
+            $("#settleBankcardUserName").val("程小洪");
             var identityCardUserName = $("#identityCardUserName").val();
             var busiLicenseUserName = $("#busiLicenseUserName").val();
             var settleBankcardUserName = $("#settleBankcardUserName").val();
@@ -418,8 +378,8 @@
                 return;
             }
             //todo : 方便调试 手动赋值 后期清除
-            /*$("#contactPhone").val("18883789865");
-            $("#settlePhoneNo").val("18883789865");*/
+            $("#contactPhone").val("18883789865");
+            $("#settlePhoneNo").val("18883789865");
             var contactPhone = $("#contactPhone").val();
             var settlePhoneNo = $("#settlePhoneNo").val();
             if (contactPhone.length < 1 || contactPhone != settlePhoneNo) {
@@ -488,16 +448,31 @@
 </script>
 <!-- 地区数据 -->
 <script>
+
+    var initCity = function(cityCode) {
+        $("#_cityCode").val(cityCode);
+    }
+
     //页面加载完成 初始化地区省份数据
     $(function () {
+
+        var provinceCode = "[[${merchantInfo.provinceCode}]]";
+        var cityCode = "[[${merchantInfo.cityCode}]]";
+
         $.get("area/province", function (result) {
             var provinceStr = "";
             for (i in result) {
                 provinceStr += "<option class='tc-darkgray' value='" + result[i].provinceCode + "'>" + result[i].provinceName + "</option>>";
             }
             $("#_provinceCode").append(provinceStr);
+
+            if (provinceCode) {
+                $("#_provinceCode").val(provinceCode);
+
+                getCity(provinceCode,initCity, cityCode);
+            }
         })
-        //省份修改事件监听 
+        //省份修改事件监听
         $("#_provinceCode").change(function () {
             var provinceCode = $("#_provinceCode").val();
             $("#provinceCode").val(provinceCode);
@@ -512,7 +487,7 @@
 
     })
     //获取城市数据 依据：省份
-    var getCity = function (provinceCode) {
+    var getCity = function (provinceCode,callBack,params) {
         $("#_cityCode").empty();
         $("#_cityCode").append("<option>请选择城市</option>");
         $.get("area/city", {provinceCode: provinceCode}, function (result) {
@@ -520,7 +495,13 @@
             for (i in result) {
                 cityStr += "<option class='tc-darkgray' value='" + result[i].cityCode + "'>" + result[i].cityName + "</option>>";
             }
+
+            console.log(callBack);
+
             $("#_cityCode").append(cityStr);
+            if (callBack) {
+                eval(callBack(params));
+            }
         })
     }
 </script>

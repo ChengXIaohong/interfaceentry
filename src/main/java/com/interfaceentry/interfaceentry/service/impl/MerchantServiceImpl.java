@@ -219,13 +219,14 @@ public class MerchantServiceImpl implements MerchantService {
     public Boolean yzfSubmitionCallBack(String json) {
         JSONObject answerModel = JSON.parseObject(json);
         JSONObject signStatusResult = answerModel.getJSONObject("result");
-        String signStatus = signStatusResult.get("signStatus").toString();
-        String signStatusDesc = signStatusResult.get("signStatusDesc").toString();
+        String signStatus = signStatusResult.getString("signStatus");
+        String signStatusDesc = signStatusResult.getString("signStatusDesc");
         Boolean success = answerModel.getBoolean("success");
         Long mmerchantId = signStatusResult.getLong("merchantNo");
-        MerchantEntity merchantEntity = merchantRespository.findById(mmerchantId).get();
+        Optional<MerchantEntity> merchantEntityOptional = merchantRespository.findById(mmerchantId);
 
-        if (null != merchantEntity) {
+        if (merchantEntityOptional.isPresent()) {
+            MerchantEntity merchantEntity = merchantEntityOptional.get();
             merchantEntity.setSignStatus(success);
             merchantEntity.setSubmissionStatus(success ? Constants.SubmitionStatus.YZFSH_PASS.name() : Constants.SubmitionStatus.YZFSH_REJ.name());
             this.saveOrUpdate(merchantEntity);
@@ -237,14 +238,23 @@ public class MerchantServiceImpl implements MerchantService {
             paramsEntity.setSignStatusDesc(signStatusDesc);
             paramsEntity.setSignStatus(signStatus);
             requestParamsRespository.save(paramsEntity);
+            //结束轮询线程
+            OnLineExecutorService.getInstance().stopTackByRequestSeqId(paramsEntity.getRequestSeqId());
         }
+
+
 
         return Boolean.TRUE;
     }
 
     @Override
     public MerchantEntity getById(Long id) {
-        return merchantRespository.findById(id).get();
+        Optional<MerchantEntity> optional = merchantRespository.findById(id);
+        MerchantEntity merchantEntity = null;
+        if (optional.isPresent()) {
+            merchantEntity = optional.get();
+        }
+        return merchantEntity;
     }
 
     private IntoResponseResult merchantInto(ParamsEntity requestParamsEntity, MerchantEntity merchantEntity) {

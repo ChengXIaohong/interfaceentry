@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>资质信息修改</title>
+</head>
+<body>
+<hr/>
+<h3 th:if = "${merchantInfo.id} == null">失败失败</h3>
+<h3 th:if = "${merchantInfo.id} != null">获取对象成功</h3>
+<hr/>
+</body>
+</html>
