@@ -32,11 +32,12 @@
 <body>
 <div style="width:80%;margin: 0 auto;border: bisque 1px solid;border-radius:25px; margin-top:10px;">
     <div style="margin-top: 20px;margin-bottom: 15px;">
-        <div style="margin: 0 auto;text-align: center;" class="tc-darkgray"><h3>申请聚合支付-基础信息修改</h3></div>
+        <div style="margin: 0 auto;text-align: center;" class="tc-darkgray"><h3>申请聚合支付-基础信息修改(不需要修改的信息无需填写)</h3></div>
     </div>
     <form class="form-horizontal" role="form" id="merchant_info_form" style="margin: 0 auto" method="post"
-          action="apply"
+          action="update/baseInfo"
           enctype="multipart/form-data">
+        <input type="hidden" name="id" id="id" th:value="${merchantInfo.id}"/>
         <div class="form-group">
             <label for="merchantNameShort" class="col-sm-2 control-label">名称</label>
             <div class="col-sm-10">
@@ -304,7 +305,7 @@
         <input type="hidden" value="1" name="merchantTxnRate">
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <a id="checkform" class="btn btn-default">提交</a>
+                <a id="checkform" class="btn btn-default">提交至翼支付审核</a>
             </div>
         </div>
     </form>
@@ -365,10 +366,7 @@
         })
 
         $("#checkform").on("click", function () {
-            //todo : 方便调试 手动赋值 后期清除
-            $("#identityCardUserName").val("程小洪");
-            $("#busiLicenseUserName").val("程小洪");
-            $("#settleBankcardUserName").val("程小洪");
+
             var identityCardUserName = $("#identityCardUserName").val();
             var busiLicenseUserName = $("#busiLicenseUserName").val();
             var settleBankcardUserName = $("#settleBankcardUserName").val();
@@ -377,9 +375,7 @@
                 alert("经营人身份证姓名、营业执照法人姓名与结算银行卡姓名值不可用或不一致");
                 return;
             }
-            //todo : 方便调试 手动赋值 后期清除
-            $("#contactPhone").val("18883789865");
-            $("#settlePhoneNo").val("18883789865");
+
             var contactPhone = $("#contactPhone").val();
             var settlePhoneNo = $("#settlePhoneNo").val();
             if (contactPhone.length < 1 || contactPhone != settlePhoneNo) {
@@ -388,7 +384,8 @@
             }
 
             var submit = true;
-            $("#merchant_info_form input").each(function () {
+            //修改不需要验证必要值
+            /*$("#merchant_info_form input").each(function () {
                 var current = $(this);
                 if (current.attr("type") == "hidden") {
                     return true;
@@ -398,7 +395,7 @@
                     submit = false;
                     return false;
                 }
-            })
+            })*/
             if (submit) {
                 $("#merchant_info_form").submit();
             }
@@ -449,7 +446,7 @@
 <!-- 地区数据 -->
 <script>
 
-    var initCity = function(cityCode) {
+    var initCity = function (cityCode) {
         $("#_cityCode").val(cityCode);
     }
 
@@ -469,7 +466,7 @@
             if (provinceCode) {
                 $("#_provinceCode").val(provinceCode);
 
-                getCity(provinceCode,initCity, cityCode);
+                getCity(provinceCode, initCity, cityCode);
             }
         })
         //省份修改事件监听
@@ -487,7 +484,7 @@
 
     })
     //获取城市数据 依据：省份
-    var getCity = function (provinceCode,callBack,params) {
+    var getCity = function (provinceCode, callBack, params) {
         $("#_cityCode").empty();
         $("#_cityCode").append("<option>请选择城市</option>");
         $.get("area/city", {provinceCode: provinceCode}, function (result) {
@@ -495,8 +492,6 @@
             for (i in result) {
                 cityStr += "<option class='tc-darkgray' value='" + result[i].cityCode + "'>" + result[i].cityName + "</option>>";
             }
-
-            console.log(callBack);
 
             $("#_cityCode").append(cityStr);
             if (callBack) {

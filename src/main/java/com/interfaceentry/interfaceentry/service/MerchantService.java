@@ -50,6 +50,7 @@ public interface MerchantService {
 
     /**
      * 按id寻找商户
+     *
      * @param id
      * @return
      */
@@ -60,8 +61,16 @@ public interface MerchantService {
 
     /**
      * 读取申请回调信息
+     *
      * @param json
      * @return
      */
     Boolean yzfSubmitionCallBack(String json);
+
+    /**
+     * 修改商户基础资料
+     * @param merchantEntity
+     * @return
+     */
+    Boolean reSubmitionBaseInfo(MerchantEntity merchantEntity);
 }

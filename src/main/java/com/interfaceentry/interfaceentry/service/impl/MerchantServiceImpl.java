@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -242,10 +244,9 @@ public class MerchantServiceImpl implements MerchantService {
             OnLineExecutorService.getInstance().stopTackByRequestSeqId(paramsEntity.getRequestSeqId());
         }
 
-
-
         return Boolean.TRUE;
     }
+
 
     @Override
     public MerchantEntity getById(Long id) {
@@ -400,5 +401,55 @@ public class MerchantServiceImpl implements MerchantService {
         return intoResponseResult;
     }
 
+    @Override
+    public Boolean reSubmitionBaseInfo(MerchantEntity merchantEntity) {
+        Optional<MerchantEntity> optional = merchantRespository.findById(merchantEntity.getId());
+        if (!optional.isPresent()) {
+            return Boolean.FALSE;
+        }
+        MerchantEntity targetMerchant = optional.get();
+        this.combineSydwCore(merchantEntity, targetMerchant);
+        merchantRespository.save(targetMerchant);
+        return Boolean.TRUE;
+    }
+
+    /**
+     * 两个对象合并
+     *
+     * @param sourceBean
+     * @param targetBean
+     * @return
+     */
+    private Object combineSydwCore(Object sourceBean, Object targetBean) {
+        Class sourceBeanClass = sourceBean.getClass();
+        Class targetBeanClass = targetBean.getClass();
+
+        Field[] sourceFields = sourceBeanClass.getDeclaredFields();
+        Field[] targetFields = targetBeanClass.getDeclaredFields();
+        for (int i = 0; i < sourceFields.length; i++) {
+            Field sourceField = sourceFields[i];
+            Field targetField = targetFields[i];
+            sourceField.setAccessible(true);
+            targetField.setAccessible(true);
+            try {
+                if (!(sourceField.get(sourceBean) == null)) {
+
+                    Object o;
+                    o = sourceField.get(sourceBean);
+
+                    if ("".getClass().equals(o.getClass())) {
+                        String biz = (String) sourceField.get(sourceBean);
+                        if (!StringUtils.isEmpty(biz)) {
+                            targetField.set(targetBean, sourceField.get(sourceBean));
+                        }
+                    }
+
+                }
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return targetBean;
+    }
 
 }

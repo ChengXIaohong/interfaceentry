@@ -129,50 +129,6 @@ public class ApplyController extends FinalExceptionHandler {
         return merchantService.getSettleBankInfos(bankName, bankCode);
     }
 
-    /**
-     * 图片转换
-     *
-     * @param merchantEntity
-     * @param fileMap
-     */
-    private void initFile2Base64Set2Obj(MerchantEntity merchantEntity, Map<String, MultipartFile> fileMap) throws IOException {
-        //身份证正面
-        MultipartFile _identityCardFrontPic = fileMap.get("_identityCardFrontPic");
-        merchantEntity.setIdentityCardFrontPic(this.multipartFile2Base64(_identityCardFrontPic));
-
-        MultipartFile _identityCardReversePic = fileMap.get("_identityCardReversePic");
-        merchantEntity.setIdentityCardReversePic(this.multipartFile2Base64(_identityCardReversePic));
-
-        MultipartFile _licensePic = fileMap.get("_licensePic");
-        merchantEntity.setLicensePic(this.multipartFile2Base64(_licensePic));
-
-        MultipartFile _storeInteriorPic = fileMap.get("_storeInteriorPic");
-        merchantEntity.setStoreInteriorPic(this.multipartFile2Base64(_storeInteriorPic));
-
-        MultipartFile _storeSignBoardPic = fileMap.get("_storeSignBoardPic");
-        merchantEntity.setStoreSignBoardPic(this.multipartFile2Base64(_storeInteriorPic));
-
-
-    }
-
-    private String multipartFile2Base64(MultipartFile multipartFile) throws IOException {
-        File f = null;
-        if (multipartFile.equals("") || multipartFile.getSize() <= 0) {
-            multipartFile = null;
-        } else {
-            InputStream ins = multipartFile.getInputStream();
-            f = new File(multipartFile.getOriginalFilename());
-            FileTools.inputStreamToFile(ins, f);
-        }
-
-        FileInputStream idReversePicInput = new FileInputStream(f);
-        byte[] idReversePicBuffer = new byte[(int) f.length()];
-        idReversePicInput.read(idReversePicBuffer);
-        idReversePicInput.close();
-        //操作完成后删除文件
-        f.delete();
-        return Base64.getEncoder().encodeToString(idReversePicBuffer);
-    }
 
     /**
      * 获取轮询
@@ -239,5 +195,51 @@ public class ApplyController extends FinalExceptionHandler {
         }
         return sb.toString();
     }
+
+    /**
+     * 图片转换
+     *
+     * @param merchantEntity
+     * @param fileMap
+     */
+    private void initFile2Base64Set2Obj(MerchantEntity merchantEntity, Map<String, MultipartFile> fileMap) throws IOException {
+        //身份证正面
+        MultipartFile _identityCardFrontPic = fileMap.get("_identityCardFrontPic");
+        merchantEntity.setIdentityCardFrontPic(this.multipartFile2Base64(_identityCardFrontPic));
+
+        MultipartFile _identityCardReversePic = fileMap.get("_identityCardReversePic");
+        merchantEntity.setIdentityCardReversePic(this.multipartFile2Base64(_identityCardReversePic));
+
+        MultipartFile _licensePic = fileMap.get("_licensePic");
+        merchantEntity.setLicensePic(this.multipartFile2Base64(_licensePic));
+
+        MultipartFile _storeInteriorPic = fileMap.get("_storeInteriorPic");
+        merchantEntity.setStoreInteriorPic(this.multipartFile2Base64(_storeInteriorPic));
+
+        MultipartFile _storeSignBoardPic = fileMap.get("_storeSignBoardPic");
+        merchantEntity.setStoreSignBoardPic(this.multipartFile2Base64(_storeInteriorPic));
+
+
+    }
+
+    private String multipartFile2Base64(MultipartFile multipartFile) throws IOException {
+        File f = null;
+        if (multipartFile.equals("") || multipartFile.getSize() <= 0) {
+            multipartFile = null;
+        } else {
+            InputStream ins = multipartFile.getInputStream();
+            f = new File(multipartFile.getOriginalFilename());
+            FileTools.inputStreamToFile(ins, f);
+        }
+
+        FileInputStream idReversePicInput = new FileInputStream(f);
+        byte[] idReversePicBuffer = new byte[(int) f.length()];
+        idReversePicInput.read(idReversePicBuffer);
+        idReversePicInput.close();
+        //操作完成后删除文件
+        f.delete();
+        return Base64.getEncoder().encodeToString(idReversePicBuffer);
+    }
+
 
 }

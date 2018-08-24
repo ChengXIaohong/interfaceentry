@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -150,4 +151,5 @@ public class OnLineExecutorService {
     public Boolean taksIsEmpty(String requestSeqId) {
         return null != OnLineExecutorService.timerContainer.get(requestSeqId);
     }
+
 }
