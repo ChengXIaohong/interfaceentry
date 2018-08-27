@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>信息修改结果</title>
+</head>
+<body>
+<hr/>
+<h3 th:if = "${success} == 'true'">已经成功提交修改申请。请耐心等待审核</h3>
+<h3 th:if = "${success} == 'false'">修改出现异常，请稍后再试</h3>
+<hr/>
+</body>
+</html>

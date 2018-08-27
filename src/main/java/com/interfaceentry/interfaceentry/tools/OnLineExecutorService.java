@@ -69,22 +69,26 @@ public class OnLineExecutorService {
                 //判断结果
                 if (!StringUtils.isEmpty(result)) {
                     JSONObject answerModel = JSON.parseObject(result);
-                    JSONObject signStatusResult = answerModel.getJSONObject("result");
-                    String signStatus = signStatusResult.get("signStatus").toString();
-                    if (signStatus.equals("FAILURE")) {
-                        OnLineExecutorService.getInstance().signStatusCall(requestSeqId, Long.parseLong(merchantNo), signStatus, signStatusResult.get("signStatusDesc").toString(), Boolean.FALSE);
-                        cancel = true;
-                    } else if ("SUCCESS".equals(signStatus)) {
-                        OnLineExecutorService.getInstance().signStatusCall(requestSeqId, Long.parseLong(merchantNo), signStatus, signStatusResult.get("signStatusDesc").toString(), Boolean.TRUE);
-                        cancel = true;
-                    } else if ("SIGNING".equals(signStatus) || "UNKONW".equals(signStatus)) {
-                        cancel = false;
+                    //获取状态
+                    String errorCode = answerModel.getString("errorCode");
+                    //r如果状态不异常  操作请求返回数据
+                    if (Constants.REQUEST_SUCCESS.equals(errorCode)) {
+                        JSONObject signStatusResult = answerModel.getJSONObject("result");
+                        String signStatus = signStatusResult.getString("signStatus");
+                        if ("FAILURE".equals(signStatus)) {
+                            OnLineExecutorService.getInstance().signStatusCall(requestSeqId, Long.parseLong(merchantNo), signStatus, signStatusResult.get("signStatusDesc").toString(), Boolean.FALSE);
+                            cancel = true;
+                        } else if ("SUCCESS".equals(signStatus)) {
+                            OnLineExecutorService.getInstance().signStatusCall(requestSeqId, Long.parseLong(merchantNo), signStatus, signStatusResult.get("signStatusDesc").toString(), Boolean.TRUE);
+                            cancel = true;
+                        } else if ("SIGNING".equals(signStatus) || "UNKONW".equals(signStatus)) {
+                            cancel = false;
+                        }
+                        //本次结果为未知或者签约中 继续下次轮询
+                        if (cancel) {
+                            OnLineExecutorService.getInstance().stopTackByRequestSeqId(requestSeqId);
+                        }
                     }
-                    //本次结果为未知或者签约中 继续下次轮询
-                    if (cancel) {
-                        OnLineExecutorService.getInstance().stopTackByRequestSeqId(requestSeqId);
-                    }
-
                 } else {
                     log.info("未获取到结果，等下次轮询");
                 }

@@ -403,18 +403,49 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public Boolean reSubmitionBaseInfo(MerchantEntity merchantEntity) {
+        //非空判断
         Optional<MerchantEntity> optional = merchantRespository.findById(merchantEntity.getId());
         if (!optional.isPresent()) {
             return Boolean.FALSE;
         }
         MerchantEntity targetMerchant = optional.get();
+        //合并修改
         this.combineSydwCore(merchantEntity, targetMerchant);
-        merchantRespository.save(targetMerchant);
+        //入库
+        targetMerchant = merchantRespository.save(targetMerchant);
+        //获取请求实例
+        ParamsEntity requestParamsEntity = requestParamsService.getParamsInstance();
+        //发起请求
+
+
+        //商户基础信息修改
+        try {
+            IntoResponseResult intoResponseResult = this.updateMerchantBaseInto(requestParamsEntity, targetMerchant);
+            Boolean success = intoResponseResult.getSuccess();
+            if (success == null) {
+                throw new RuntimeException("商户进件请求success 未成功");
+            }
+            if (!success) {
+                String errorMsg = intoResponseResult.getErrorMsg();
+                throw new RuntimeException(errorMsg);
+            }
+        } catch (Exception e) {
+            logger.error("商户进件请求失败 merchantId:{}, errorMsg:{}", merchantEntity.getId(), e.getMessage(), e);
+            return Boolean.FALSE;
+        }
+
+        //签约
+        try {
+            OnLineExecutorService.getInstance().taskForGetResult(requestParamsEntity.getRequestSeqId(), String.valueOf(merchantEntity.getId()));
+        } catch (Exception e) {
+            logger.error("商户进件签约失败 merchantId:{},requestSeqId:{}", merchantEntity.getId(), requestParamsEntity.getRequestSeqId(), e);
+            return Boolean.FALSE;
+        }
         return Boolean.TRUE;
     }
 
     /**
-     * 两个对象合并
+     * 两个对象合并 把sourceBean中不为空的属性赋值给targetBean
      *
      * @param sourceBean
      * @param targetBean
@@ -450,6 +481,134 @@ public class MerchantServiceImpl implements MerchantService {
             }
         }
         return targetBean;
+    }
+
+    private IntoResponseResult updateMerchantBaseInto(ParamsEntity requestParamsEntity, MerchantEntity merchantEntity) {
+        IntoResponseResult intoResponseResult = new IntoResponseResult();
+        String merchantName = merchantEntity.getMerchantName();// 商户名称  M
+        String businessScope = merchantEntity.getBusinessScope();// 营业范围  M
+        String businessTerm = merchantEntity.getBusinessTerm();//营业期限  M 格式：yyyy - MM - dd，营业期限为⻓长期时，填：2199 - 12 - 31
+        String provinceCode = merchantEntity.getProvinceCode();//省份编码  M 请⻅见《地区城市码.xlsx》
+        String cityCode = merchantEntity.getCityCode();// 城市编码  M 请⻅见《地区城市码.xlsx》
+        String businessAddress = merchantEntity.getBusinessAddress();// 营业地址  M
+        String mccCode = merchantEntity.getMccCode();//行业分类编码  M 请⻅见《行业类型码表.xlsx》
+        String contactPhone = merchantEntity.getContactPhone();// 联系⼈人⼿手机号  M
+        String identityCardUserName = merchantEntity.getIdentityCardUserName();// 身份证⽤用户姓名  M
+        String identityCardNo = merchantEntity.getIdentityCardNo();//身份证件号  M
+
+        String busiLicenseNo = merchantEntity.getBusiLicenseNo();//营业执照号  M
+        String busiLicenseUserName = merchantEntity.getBusiLicenseUserName();//营业执照⽤用户姓名  M
+
+
+        String settleBankName = merchantEntity.getSettleBankName();// 结算银行名称  M 通过银行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
+        String settleBankNo = merchantEntity.getSettleBankNo();//结算银行编码  M 请填写空字符串串，例例如：””
+        String settleBankcardNo = merchantEntity.getSettleBankcardNo();//结算银⾏行行卡号  M
+        String settleBankcardUserName = merchantEntity.getSettleBankcardUserName();// 结算银行卡⽤用户姓名 M
+        String settleBankcardLineNumber = merchantEntity.getSettleBankcardLineNumb(); //银行卡联行号  M 通过银行卡所办的地区城市码来查询银⾏行行⽀支⾏行行名称和联⾏行行号集合，供商户选择
+        String settleBankcardFinanceAreaCode = merchantEntity.getSettleBankcardFinanceAreaCode();//银行卡结算地区码  M 银⾏行行卡财务结算地区码，通过接口⼀一查询获得
+        String settlePhoneNo = merchantEntity.getSettlePhoneNo();// 银行预留留⼿手机号  M
+        String merchantTxnRate = merchantEntity.getMerchantTxnRate();// 商户签约交易易费率  M 单位：%
+        String merchantTxnSettlePeriod = merchantEntity.getMerchantTxnSettlePeriod();// 商户交易易结算周期  M 填“1”
+        String integrateLicense = merchantEntity.getLicenseType();//三证合⼀一照;
+
+        String requestSystem = requestParamsEntity.getRequestSystem();//请求系统  M 平台商在聚合平台申请的平台编码
+        String requestSeqId = requestParamsEntity.getRequestSeqId(); //请求流⽔水号  M 保证每次请求唯⼀一
+        String platformMerchantNo = requestParamsEntity.getPlatformMerchantNo();// 平台商商户号  M 平台商在商服开的商户号，作为代理理商与平台商下的商户进⾏行行绑定
+        String agentMerchantCode = requestParamsEntity.getAgentMerchantCode();// 代理理商商户号  M 平台商在翼⽀支付代理理商平台开通的商户号
+        String recommendNo = requestParamsEntity.getRecommendNo();// 员⼯工账号  M 平台商在翼⽀支付代理理商平台为⾃自⼰己的员⼯工开通的员⼯工账号
+
+        String merchantNameShort = merchantEntity.getMerchantNameShort(); //商户简称  M 接口进件上传给微信⽀支付宝通道的商户简称
+        String merchantNo = String.valueOf(merchantEntity.getId()); //商户号  M 商户在平台商侧的商户号
+
+        /*
+        mac检验码  M  字符串串拼接顺序：
+            requestSystem+requestSeqId+merchant
+            No+merchantName+merchantNameShor
+            t+businessScope+businessTerm+provinc
+            eCode+cityCode+businessAddress+mcc
+            Code+contactPhone+identityCardUserN
+            ame+identityCardNo+busiLicenseNo+bu
+            siLicenseUserName+licenseType+settle
+            BankName+settleBankNo+settleBankcar
+            dNo+settleBankcardUserName+settleBa
+            nkcardLineNumber+settleBankcardFinan
+            ceAreaCode+merchantTxnRate+mercha
+            ntTxnSettlePeriod+接口key
+         */
+        String mac = requestSystem +
+                requestSeqId +
+                merchantNo + merchantName +
+                merchantNameShort +
+                businessScope +
+                businessTerm +
+                businessAddress +
+                mccCode +
+                contactPhone + busiLicenseNo +
+                settleBankName +
+                settleBankNo +
+                settleBankcardNo +
+                settleBankcardLineNumber +
+                settleBankcardFinanceAreaCode +
+                merchantTxnRate + merchantTxnSettlePeriod +
+                requestParamsEntity.getKey();
+        mac = AppMD5Util.MD5(mac);
+
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("merchantName", merchantName);
+        paramsMap.put("businessScope", businessScope);
+        paramsMap.put("businessTerm", businessTerm);
+        paramsMap.put("provinceCode", provinceCode);
+        paramsMap.put("cityCode", cityCode);
+        paramsMap.put("businessAddress", businessAddress);
+        paramsMap.put("mccCode", mccCode);
+        paramsMap.put("contactPhone", contactPhone);
+        paramsMap.put("identityCardUserName", identityCardUserName);
+        paramsMap.put("identityCardNo", identityCardNo);
+
+        paramsMap.put("busiLicenseNo", busiLicenseNo);
+        paramsMap.put("busiLicenseUserName", busiLicenseUserName);
+
+        paramsMap.put("settleBankName", settleBankName);
+        paramsMap.put("settleBankNo", settleBankNo);
+        paramsMap.put("settleBankcardNo", settleBankcardNo);
+        paramsMap.put("settleBankcardUserName", settleBankcardUserName);
+        paramsMap.put("settleBankcardLineNumber", settleBankcardLineNumber);
+        paramsMap.put("settleBankcardFinanceAreaCode", settleBankcardFinanceAreaCode);
+        paramsMap.put("settlePhoneNo", settlePhoneNo);
+        paramsMap.put("merchantTxnRate", merchantTxnRate);
+        paramsMap.put("merchantTxnSettlePeriod", merchantTxnSettlePeriod);
+
+        paramsMap.put("merchantNameShort", merchantNameShort);
+        paramsMap.put("agentMerchantCode", agentMerchantCode);
+        paramsMap.put("recommendNo", recommendNo);
+        paramsMap.put("mac", mac);
+        paramsMap.put("requestSystem", requestSystem);
+        paramsMap.put("requestSeqId", requestSeqId);
+        paramsMap.put("platformMerchantNo", platformMerchantNo);
+        paramsMap.put("merchantNo", merchantNo);
+        paramsMap.put("integrateLicense", integrateLicense);
+
+        String data = JSON.toJSONString(paramsMap);
+        data = OkHttpUtil.post(requestParamsEntity.getRequestUri() + Constants.URI_UPDATE_MERCHANT_BASEINFO, data, OkHttpUtil.APPLICATION_JSON);
+        if (StringUtils.isEmpty(data)) {
+            return intoResponseResult;
+        }
+        intoResponseResult = JSONObject.parseObject(data, IntoResponseResult.class);
+        //保存请求数据
+        //补充数据
+        requestParamsEntity.setCreateAt(System.currentTimeMillis());
+        requestParamsEntity.setUpdateAt(System.currentTimeMillis());
+//      requestParamsEntity.setCreateBy();
+//      requestParamsEntity.setUpdateBy();
+//      requestParamsEntity.setBankCode();
+
+        requestParamsEntity.setBankName(merchantEntity.getSettleBankName());
+
+        requestParamsEntity.setMerchantId(merchantEntity.getId());
+        requestParamsEntity.setResponseResult(data);
+
+        requestParamsRespository.save(requestParamsEntity);
+        return intoResponseResult;
     }
 
 }

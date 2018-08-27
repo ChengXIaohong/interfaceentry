@@ -30,7 +30,7 @@ public class Constants {
      * 《申请平台商商户进件》接⼜进⾏商户数据录
      * ⼊与初审
      */
-    public static final String URI_SUBMIT_MERCHANT = "mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
+    public static final String URI_SUBMIT_MERCHANT = "/mapi/o2o/personalstore/platformMerchantService/applyMerchantEntry";
 
     /**
      * 步骤四：待商户资质信息和基本信息上传成功
@@ -39,7 +39,24 @@ public class Constants {
      * 签约结果查询》接⼜进⾏商户⼊驻签约结果的
      * 查询操作，查
      */
-    public static final String URI_SUBMIT_RESULT = "mapi/o2o/personalstore/platformMerchantService/querySignAggregateRusult";
+    public static final String URI_SUBMIT_RESULT = "/mapi/o2o/personalstore/platformMerchantService/querySignAggregateRusult";
+
+    /**
+     * 针对平台商接⼝口进件业务场景，当商户基本信息审核失败后，平台商需重
+     * 新收集商户基本信息，并在翼⽀支付侧进⾏行行更更新申请，重新审核
+     */
+    public static  final String URI_UPDATE_MERCHANT_BASEINFO = "/mapi/o2o/personalstore/platformMerchantService/updateMerchantBaseInfo";
+
+    /**
+     * 针对平台商接⼝口进件业务场景，当商户资质信息审核失败后，平台商需重
+     * 新收集商户资质信息，并在翼⽀支付侧进⾏行行更更新申请，重新审核
+     */
+    public static final String UPDATE_BUSI_QUALIFICATIONINFO = "mapi/o2o/personalstore/platformMerchantService/updateBusiQualificationInfo";
+
+    /**
+     * 错误码字典表 成功
+     */
+    public static final String REQUEST_SUCCESS = "000000";
 
     public enum SubmitionStatus {
         JBGSH_ING(10, "加班狗审核中"),

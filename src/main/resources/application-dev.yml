@@ -35,6 +35,8 @@ spring:
     prefix: classpath:/template/
 server:
   port: 8089
+  tomcat:
+    basedir: /data/apps/temp
 kdypay:
   config:
     requestSystem: kdypay

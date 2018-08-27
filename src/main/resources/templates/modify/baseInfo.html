@@ -61,12 +61,13 @@
                        th:value="${merchantInfo.businessScope}"
                        placeholder="请输入营业范围">
             </div>
-            <!--<div class="col-sm-10">
-                <select id="businessScope" name="businessScope" class="form-control">
-                    <option class="tc-darkgray">&#45;&#45;请选择营业范围</option>
-                </select>
-            </div>-->
+            <!-- <div class="col-sm-10">
+                 <select id="businessScope" name="businessScope" class="form-control">
+                     <option class="tc-darkgray">&#45;&#45;请选择营业范围</option>
+                 </select>
+             </div>-->
         </div>
+
 
         <div class="form-group">
             <label for="businessTerm" class="col-sm-2 control-label">营业期限</label>
@@ -78,7 +79,6 @@
                        placeholder="请选择营业期限">
             </div>
         </div>
-
         <div class="form-group">
             <label for="provinceCode" class="col-sm-2 control-label">选择省份</label>
             <div class="col-sm-10">
@@ -132,7 +132,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <!--<div class="form-group">
             <label for="identityCardUserName" class="col-sm-2 control-label">证件姓名</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="identityCardUserName"
@@ -150,7 +150,7 @@
                        name="identityCardNo"
                        placeholder="请输入证件号码">
             </div>
-        </div>
+        </div>-->
 
         <div class="form-group">
             <label for="busiLicenseNo" class="col-sm-2 control-label">营业执照号</label>
@@ -162,7 +162,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <!--<div class="form-group">
             <label for="busiLicenseUserName" class="col-sm-2 control-label">执照用户名</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="busiLicenseUserName"
@@ -170,18 +170,18 @@
                        name="busiLicenseUserName"
                        placeholder="请输入营业执照用户名"/>
             </div>
-        </div>
+        </div>-->
 
-        <div class="form-group">
+        <!--<div class="form-group">
             <label for="licenseType" class="col-sm-2 control-label">执照类型</label>
             <div class="col-sm-10">
                 <select id="licenseType" name="licenseType" class="form-control">
-                    <option class="tc-darkgray" value="">--请选择营业执照类型</option>
+                    <option class="tc-darkgray" value="">&#45;&#45;请选择营业执照类型</option>
                     <option class="tc-darkgray" value="businessLicense">营业执照</option>
                     <option class="tc-darkgray" value="integrateLicense">三证合一照</option>
                 </select>
             </div>
-        </div>
+        </div>-->
 
         <div class="form-group">
             <label for="settleBankName" class="col-sm-2 control-label">结算银行</label>
@@ -259,7 +259,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <!--<div class="form-group">
             <label for="settleBankcardUserName" class="col-sm-2 control-label">结算卡用户名</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="settleBankcardUserName"
@@ -267,7 +267,7 @@
                        name="settleBankcardUserName"
                        placeholder="请输入结算银行卡用户姓名"/>
             </div>
-        </div>
+        </div>-->
 
         <div class="form-group">
             <label for="settleBankcardLineNumb" class="col-sm-2 control-label">银行卡联行号</label>
@@ -289,7 +289,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <!--<div class="form-group">
             <label for="settlePhoneNo" class="col-sm-2 control-label">预留手机</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control tc-darkgray" id="settlePhoneNo"
@@ -297,7 +297,7 @@
                        name="settlePhoneNo"
                        placeholder="请输入银行卡预留手机"/>
             </div>
-        </div>
+        </div>-->
 
         <!-- 商户交易易结算周期  M 填“1” -->
         <input type="hidden" value="1" name="merchantTxnSettlePeriod">
@@ -366,23 +366,6 @@
         })
 
         $("#checkform").on("click", function () {
-
-            var identityCardUserName = $("#identityCardUserName").val();
-            var busiLicenseUserName = $("#busiLicenseUserName").val();
-            var settleBankcardUserName = $("#settleBankcardUserName").val();
-
-            if (identityCardUserName.length < 1 || identityCardUserName != busiLicenseUserName || busiLicenseUserName != settleBankcardUserName) {
-                alert("经营人身份证姓名、营业执照法人姓名与结算银行卡姓名值不可用或不一致");
-                return;
-            }
-
-            var contactPhone = $("#contactPhone").val();
-            var settlePhoneNo = $("#settlePhoneNo").val();
-            if (contactPhone.length < 1 || contactPhone != settlePhoneNo) {
-                alert("经营者手机号与结算预留手机号值不可用或不一致");
-                return;
-            }
-
             var submit = true;
             //修改不需要验证必要值
             /*$("#merchant_info_form input").each(function () {

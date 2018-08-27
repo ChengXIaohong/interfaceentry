@@ -24,13 +24,48 @@ public class UpdateController {
     @Autowired
     private MerchantService merchantService;
 
-    @RequestMapping("/baseInfo")
-    public ModelAndView updateBaseInfo(@NotNull MerchantEntity merchantEntity) {
-        ModelAndView modelAndView = new ModelAndView("modify/baseInfo");
-
-        merchantService.reSubmitionBaseInfo(merchantEntity);
-
-        modelAndView.addObject("merchantInfo" , merchantEntity);
+    /**
+     * 修改信息转发路由
+     * @param merchantId
+     * @param modifyType
+     * @return
+     */
+    @RequestMapping("")
+    public ModelAndView modify(@NotNull Long merchantId, @NotNull String modifyType) {
+        ModelAndView modelAndView = new ModelAndView("modify/" + modifyType);
+        MerchantEntity merchantEntity = merchantService.getById(merchantId);
+        if (null == merchantEntity) {
+            throw new RuntimeException("非法商户主键:" + merchantId);
+        }
+        modelAndView.addObject("merchantInfo", merchantEntity);
         return modelAndView;
     }
+
+    /**
+     * 商户基础信息修改
+     * @param merchantEntity
+     * @return
+     */
+    @RequestMapping("/baseInfo")
+    public ModelAndView updateBaseInfo(@NotNull MerchantEntity merchantEntity) {
+        ModelAndView modelAndView = new ModelAndView("modify/result");
+
+        Boolean success = merchantService.reSubmitionBaseInfo(merchantEntity);
+
+        modelAndView.addObject("success", success);
+        return modelAndView;
+    }
+
+    /**
+     * 商户资质信息修改
+     * @param merchantEntity
+     * @return
+     */
+    @RequestMapping("/busiqualificationinfo")
+    public ModelAndView updateBusiQualificationInfo(MerchantEntity merchantEntity) {
+        ModelAndView modelAndView = new ModelAndView("busiqualificationinfo");
+        return modelAndView;
+    }
+
+
 }
