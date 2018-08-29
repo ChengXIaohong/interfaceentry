@@ -5,7 +5,7 @@
 
     <groupId>com.interfaceentry</groupId>
     <artifactId>interfaceentry</artifactId>
-    <version>${project.vsersion}</version>
+    <version>${project.version}</version>
     <packaging>jar</packaging>
 
     <name>interfaceentry</name>
@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <version>1.0.0-SNAPSHOT</version>
+        <project.version>1.0.0-SNAPSHOT</project.version>
     </properties>
 
     <dependencies>
@@ -109,6 +109,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <mainClass>com.interfaceentry.interfaceentry.InterfaceentryApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

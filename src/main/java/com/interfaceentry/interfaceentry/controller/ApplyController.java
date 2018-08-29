@@ -125,7 +125,7 @@ public class ApplyController extends FinalExceptionHandler {
      */
     @RequestMapping("/getSettleBankInfos")
     @ResponseBody
-    public List<SettleBankInfo> getSettleBankInfos(String bankName, String bankCode) {
+    public List<SettleBankInfo> getSettleBankInfos(String bankName, String bankCode) throws UnsupportedEncodingException {
         return merchantService.getSettleBankInfos(bankName, bankCode);
     }
 

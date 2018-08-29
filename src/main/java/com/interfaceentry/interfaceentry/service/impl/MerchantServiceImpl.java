@@ -149,8 +149,11 @@ public class MerchantServiceImpl implements MerchantService {
         paramsMap.put("bankCode", bankCode);// 银行编码  M 例例如：中国农业银行 ABC、中国银行 BOC
         paramsMap.put("mac", mac);
         try {
+
             String data = JSON.toJSONString(paramsMap);
+            logger.info(data);
             data = OkHttpUtil.post(requestParamsEntity.getRequestUri() + MerchantServiceImpl.GET_BANK_INFOS, data, OkHttpUtil.APPLICATION_JSON);
+            logger.info(data);
             if (StringUtils.isEmpty(data)) {
                 return Collections.EMPTY_LIST;
             }

@@ -98,7 +98,7 @@ public class OnLineExecutorService {
         /**
          * 延迟5分钟启动
          */
-        long delay = 0;
+        long delay = 5 * 60 * 1000;
 
         /**
          *每五分钟执行一次
