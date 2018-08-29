@@ -18,10 +18,9 @@ public interface RequestParamsRespository extends CrudRepository<ParamsEntity, L
     ParamsEntity findFirstByRequestSeqIdEquals(String requestSeqId);
 
     /**
-     * 找到最新请求的一组记录
+     * 找到最新请求的一组记录 根据商户ID
      * @param merchantId
      * @return
      */
     ParamsEntity findFirstByMerchantIdEqualsOrderByIdDesc(Long merchantId);
-
 }

@@ -31,4 +31,11 @@ public interface RequestParamsService {
      * @return
      */
     ParamsEntity getParamsByRequestSeqId(String requestSeqId);
+
+    /**
+     * 根据商户号获取最新的拒绝原因
+     * @param merchantId
+     * @return
+     */
+    ParamsEntity getRecentByMerchantId(Long merchantId);
 }

@@ -56,7 +56,7 @@ public class FileTools {
         merchantEntity.setStoreInteriorPic(multipartFile2Base64(_storeInteriorPic));
 
         MultipartFile _storeSignBoardPic = fileMap.get("_storeSignBoardPic");
-        merchantEntity.setStoreSignBoardPic(multipartFile2Base64(_storeInteriorPic));
+        merchantEntity.setStoreSignBoardPic(multipartFile2Base64(_storeSignBoardPic));
 
 
     }

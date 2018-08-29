@@ -79,7 +79,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public List<MerchantEntity> getMerchantByStatus(String status) {
         if ("ALL".equals(status)) {
-            Iterable<MerchantEntity> merchantEntityIterator =  merchantRespository.findAll();
+            Iterable<MerchantEntity> merchantEntityIterator = merchantRespository.findAll();
             return Lists.newArrayList(merchantEntityIterator);
         }
         return merchantRespository.findBySubmissionStatusEquals(status);
@@ -435,7 +435,7 @@ public class MerchantServiceImpl implements MerchantService {
                 throw new RuntimeException(errorMsg);
             }
         } catch (Exception e) {
-            logger.error("商户进件请求失败 merchantId:{}, errorMsg:{}", merchantEntity.getId(), e.getMessage(), e);
+            logger.error("商户基础信息修改请求发送失败 merchantId:{}, errorMsg:{}", merchantEntity.getId(), e.getMessage(), e);
             return Boolean.FALSE;
         }
 
@@ -443,7 +443,7 @@ public class MerchantServiceImpl implements MerchantService {
         try {
             OnLineExecutorService.getInstance().taskForGetResult(requestParamsEntity.getRequestSeqId(), String.valueOf(merchantEntity.getId()));
         } catch (Exception e) {
-            logger.error("商户进件签约失败 merchantId:{},requestSeqId:{}", merchantEntity.getId(), requestParamsEntity.getRequestSeqId(), e);
+            logger.error("商户基础信息修改签约轮询失败 merchantId:{},requestSeqId:{}", merchantEntity.getId(), requestParamsEntity.getRequestSeqId(), e);
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
@@ -452,47 +452,123 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public Boolean reSubmitionBusiqualificationinfo(MerchantEntity merchantEntity) {
 
-        return null;
+        if (null == merchantEntity) {
+            return Boolean.FALSE;
+        }
+
+        //非空判断
+        Optional<MerchantEntity> optional = merchantRespository.findById(merchantEntity.getId());
+        if (!optional.isPresent()) {
+            return Boolean.FALSE;
+        }
+
+        MerchantEntity targetMerchant = optional.get();
+        //资质类型
+        String qualificationType = null;
+        //照片信息
+        String picData = null;
+
+        //修改身份证正面照
+        if (!StringUtils.isEmpty(merchantEntity.getIdentityCardFrontPic())) {
+            qualificationType = Constants.UPDATE_IDCARD;
+            picData = merchantEntity.getIdentityCardFrontPic();
+            targetMerchant.setIdentityCardFrontPic(picData);
+            //修改身份证反面照
+        } else if (!StringUtils.isEmpty(merchantEntity.getIdentityCardReversePic())) {
+            qualificationType = Constants.UPDATE_IDCARDBACK;
+            picData = merchantEntity.getIdentityCardReversePic();
+            targetMerchant.setIdentityCardFrontPic(picData);
+            //修改许可证照片
+        } else if (!StringUtils.isEmpty(merchantEntity.getLicensePic())) {
+            qualificationType = targetMerchant.getLicenseType();
+            picData = merchantEntity.getLicensePic();
+            targetMerchant.setLicensePic(picData);
+            //修改店铺内景照片
+        } else if (!StringUtils.isEmpty(merchantEntity.getStoreInteriorPic())) {
+            qualificationType = Constants.UPDATE_STOREINTERIOR;
+            picData = merchantEntity.getStoreInteriorPic();
+            targetMerchant.setStoreInteriorPic(picData);
+            //修改店铺招牌照片
+        } else if (!StringUtils.isEmpty(merchantEntity.getStoreSignBoardPic())) {
+            qualificationType = Constants.UPDATE_SIGNBOARD;
+            picData = merchantEntity.getStoreSignBoardPic();
+            targetMerchant.setStoreSignBoardPic(picData);
+        }
+
+        //入库
+        targetMerchant = merchantRespository.save(targetMerchant);
+        //获取请求实例
+        ParamsEntity requestParamsEntity = requestParamsService.getParamsInstance();
+
+
+        //商户资质信息修改
+        try {
+            IntoResponseResult intoResponseResult = this.updateMerchantBusiqualificationinfo(requestParamsEntity, targetMerchant.getId(), qualificationType, picData);
+            Boolean success = intoResponseResult.getSuccess();
+            if (success == null) {
+                throw new RuntimeException("商户进件请求success 未成功");
+            }
+            if (!success) {
+                String errorMsg = intoResponseResult.getErrorMsg();
+                throw new RuntimeException(errorMsg);
+            }
+        } catch (Exception e) {
+            logger.error("商户资质修改请求失败 merchantId:{}, errorMsg:{}", merchantEntity.getId(), e.getMessage(), e);
+            return Boolean.FALSE;
+        }
+
+        //签约
+        try {
+            OnLineExecutorService.getInstance().taskForGetResult(requestParamsEntity.getRequestSeqId(), String.valueOf(merchantEntity.getId()));
+        } catch (Exception e) {
+            logger.error("商户资质信息修改签约轮询失败 merchantId:{},requestSeqId:{}", merchantEntity.getId(), requestParamsEntity.getRequestSeqId(), e);
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
     }
 
     /**
-     * 两个对象合并 把sourceBean中不为空的属性赋值给targetBean
+     * 修改资质信息
      *
-     * @param sourceBean
-     * @param targetBean
      * @return
      */
-    private Object combineSydwCore(Object sourceBean, Object targetBean) {
-        Class sourceBeanClass = sourceBean.getClass();
-        Class targetBeanClass = targetBean.getClass();
+    private IntoResponseResult updateMerchantBusiqualificationinfo(ParamsEntity requestParamsEntity, Long merchantId, String qualificationType, String picData) {
+        IntoResponseResult intoResponseResult = new IntoResponseResult();
 
-        Field[] sourceFields = sourceBeanClass.getDeclaredFields();
-        Field[] targetFields = targetBeanClass.getDeclaredFields();
-        for (int i = 0; i < sourceFields.length; i++) {
-            Field sourceField = sourceFields[i];
-            Field targetField = targetFields[i];
-            sourceField.setAccessible(true);
-            targetField.setAccessible(true);
-            try {
-                if (!(sourceField.get(sourceBean) == null)) {
+        //参数获取
+        String requestSystem = requestParamsEntity.getRequestSystem();
+        String requestSeqId = requestParamsEntity.getRequestSeqId();
+        String merchantNo = merchantId.toString();
 
-                    Object o;
-                    o = sourceField.get(sourceBean);
+        String mac = requestSystem + requestSeqId + merchantNo + qualificationType + requestParamsEntity.getKey();
+        mac = AppMD5Util.MD5(mac);
 
-                    if ("".getClass().equals(o.getClass())) {
-                        String biz = (String) sourceField.get(sourceBean);
-                        if (!StringUtils.isEmpty(biz)) {
-                            targetField.set(targetBean, sourceField.get(sourceBean));
-                        }
-                    }
+        //参数组装
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("requestSystem", requestSystem);
+        paramsMap.put("requestSeqId", requestSeqId);
+        paramsMap.put("merchantNo", merchantNo);
+        paramsMap.put("qualificationType", qualificationType);
+        paramsMap.put("picData", picData);
+        paramsMap.put("mac", mac);
 
-                }
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
+        //发送请求并且得到回应
+        String data = JSON.toJSONString(paramsMap);
+        data = OkHttpUtil.post(requestParamsEntity.getRequestUri() + Constants.URI_UPDATE_BUSI_QUALIFICATIONINFO, data, OkHttpUtil.APPLICATION_JSON);
+        if (StringUtils.isEmpty(data)) {
+            return intoResponseResult;
         }
-        return targetBean;
+        intoResponseResult = JSONObject.parseObject(data, IntoResponseResult.class);
+        requestParamsEntity.setCreateAt(System.currentTimeMillis());
+        requestParamsEntity.setUpdateAt(System.currentTimeMillis());
+
+        requestParamsEntity.setMerchantId(merchantId);
+        requestParamsEntity.setResponseResult(data);
+
+        requestParamsRespository.save(requestParamsEntity);
+        return intoResponseResult;
     }
+
 
     private IntoResponseResult updateMerchantBaseInto(ParamsEntity requestParamsEntity, MerchantEntity merchantEntity) {
         IntoResponseResult intoResponseResult = new IntoResponseResult();
@@ -620,6 +696,45 @@ public class MerchantServiceImpl implements MerchantService {
 
         requestParamsRespository.save(requestParamsEntity);
         return intoResponseResult;
+    }
+
+    /**
+     * 两个对象合并 把sourceBean中不为空的属性赋值给targetBean
+     *
+     * @param sourceBean
+     * @param targetBean
+     * @return
+     */
+    private Object combineSydwCore(Object sourceBean, Object targetBean) {
+        Class sourceBeanClass = sourceBean.getClass();
+        Class targetBeanClass = targetBean.getClass();
+
+        Field[] sourceFields = sourceBeanClass.getDeclaredFields();
+        Field[] targetFields = targetBeanClass.getDeclaredFields();
+        for (int i = 0; i < sourceFields.length; i++) {
+            Field sourceField = sourceFields[i];
+            Field targetField = targetFields[i];
+            sourceField.setAccessible(true);
+            targetField.setAccessible(true);
+            try {
+                if (!(sourceField.get(sourceBean) == null)) {
+
+                    Object o;
+                    o = sourceField.get(sourceBean);
+
+                    if ("".getClass().equals(o.getClass())) {
+                        String biz = (String) sourceField.get(sourceBean);
+                        if (!StringUtils.isEmpty(biz)) {
+                            targetField.set(targetBean, sourceField.get(sourceBean));
+                        }
+                    }
+
+                }
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return targetBean;
     }
 
 }

@@ -33,6 +33,7 @@
 <div style="width:80%;margin: 0 auto;border: bisque 1px solid;border-radius:25px; margin-top:10px;">
     <div style="margin-top: 20px;margin-bottom: 15px;">
         <div style="margin: 0 auto;text-align: center;" class="tc-darkgray"><h3>申请聚合支付-基础信息修改(不需要修改的信息无需填写)</h3></div>
+        <div style="margin: 0 auto;text-align: center;color: red"><h3 th:text="${params.signStatusDesc}"></h3></div>
     </div>
     <form class="form-horizontal" role="form" id="merchant_info_form" style="margin: 0 auto" method="post"
           action="update/baseInfo"

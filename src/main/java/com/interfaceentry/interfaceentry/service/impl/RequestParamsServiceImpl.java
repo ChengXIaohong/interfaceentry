@@ -46,4 +46,9 @@ public class RequestParamsServiceImpl implements RequestParamsService {
     public ParamsEntity getParamsByRequestSeqId(String requestSeqId) {
         return requestParamsRespository.findFirstByRequestSeqIdEquals(requestSeqId);
     }
+
+    @Override
+    public ParamsEntity getRecentByMerchantId(Long merchantId) {
+        return requestParamsRespository.findFirstByMerchantIdEqualsOrderByIdDesc(merchantId);
+    }
 }

@@ -1,7 +1,9 @@
 package com.interfaceentry.interfaceentry.controller;
 
 import com.interfaceentry.interfaceentry.entity.MerchantEntity;
+import com.interfaceentry.interfaceentry.entity.ParamsEntity;
 import com.interfaceentry.interfaceentry.service.MerchantService;
+import com.interfaceentry.interfaceentry.service.RequestParamsService;
 import com.interfaceentry.interfaceentry.tools.FileTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,9 @@ public class UpdateController {
     @Autowired
     private MerchantService merchantService;
 
+    @Autowired
+    private RequestParamsService requestParamsService;
+
     /**
      * 修改信息转发路由
      *
@@ -40,6 +45,8 @@ public class UpdateController {
     public ModelAndView modify(@NotNull Long merchantId, @NotNull String modifyType) {
         ModelAndView modelAndView = new ModelAndView("modify/" + modifyType);
         MerchantEntity merchantEntity = merchantService.getById(merchantId);
+        ParamsEntity paramsEntity = requestParamsService.getRecentByMerchantId(merchantId);
+        modelAndView.addObject("params", paramsEntity);
         if (null == merchantEntity) {
             throw new RuntimeException("非法商户主键:" + merchantId);
         }
@@ -90,7 +97,7 @@ public class UpdateController {
         FileTools.initFile2Base64Set2Obj(merchantEntity, fileMap);
 
         Boolean success = merchantService.reSubmitionBusiqualificationinfo(merchantEntity);
-        modelAndView.addObject("success", true);
+        modelAndView.addObject("success", success);
         return modelAndView;
     }
 

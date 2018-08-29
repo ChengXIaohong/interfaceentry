@@ -45,13 +45,44 @@ public class Constants {
      * 针对平台商接⼝口进件业务场景，当商户基本信息审核失败后，平台商需重
      * 新收集商户基本信息，并在翼⽀支付侧进⾏行行更更新申请，重新审核
      */
-    public static  final String URI_UPDATE_MERCHANT_BASEINFO = "/mapi/o2o/personalstore/platformMerchantService/updateMerchantBaseInfo";
+    public static final String URI_UPDATE_MERCHANT_BASEINFO = "/mapi/o2o/personalstore/platformMerchantService/updateMerchantBaseInfo";
 
     /**
      * 针对平台商接⼝口进件业务场景，当商户资质信息审核失败后，平台商需重
      * 新收集商户资质信息，并在翼⽀支付侧进⾏行行更更新申请，重新审核
      */
-    public static final String UPDATE_BUSI_QUALIFICATIONINFO = "mapi/o2o/personalstore/platformMerchantService/updateBusiQualificationInfo";
+    public static final String URI_UPDATE_BUSI_QUALIFICATIONINFO = "/mapi/o2o/personalstore/platformMerchantService/updateBusiQualificationInfo";
+
+    /**
+     * 资质修改用
+     * IDCard-身份证正⾯照
+     */
+    public static final String UPDATE_IDCARD = "IDCard";
+
+    /**
+     * 资质修改用
+     * IDCardBack-身份证反⾯照
+     */
+    public static final String UPDATE_IDCARDBACK = "IDCardBack";
+
+    /**
+     * 资质修改用
+     * integrateLicense：三证合一照
+     */
+    public static final String UPDATE_INTEGRATELICENSE = "integrateLicense";
+
+
+    /**
+     * 资质修改用
+     * storeInterior：店铺内景
+     */
+    public static final String UPDATE_STOREINTERIOR = "storeInterior";
+
+    /**
+     * 资质修改用
+     * signBoard：店铺招牌照
+     */
+    public static final String UPDATE_SIGNBOARD = "signBoard";
 
     /**
      * 错误码字典表 成功

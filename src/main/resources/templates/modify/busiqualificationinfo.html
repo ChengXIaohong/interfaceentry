@@ -18,98 +18,107 @@
 <body>
 <div style="width:80%;margin: 0 auto;border: bisque 1px solid;border-radius:25px; margin-top:10px;">
     <div style="margin-top: 20px;margin-bottom: 15px;">
-        <div style="margin: 0 auto;text-align: center;" class="tc-darkgray"><h3>资质信息修改(不需要修改的信息无需提交)</h3></div>
+        <div style="margin: 0 auto;text-align: center;" class="tc-darkgray"><h3>资质信息修改(不需要修改的信息无需提交,一次只能提交一张照片)</h3>
+        </div>
+        <div style="margin: 0 auto;text-align: center;color: red"><h3 th:text="${params.signStatusDesc}"></h3>
+        </div>
+        <form class="form-horizontal" role="form" id="merchant_info_form" style="margin: 0 auto" method="post"
+              action="update/busiqualificationinfo"
+              enctype="multipart/form-data">
+
+            <input type="hidden" name="id" id="id" th:value="${merchantInfo.id}"/>
+            <div class="form-group">
+                <label for="_identityCardFrontPic" class="col-sm-2 control-label">身份证正面</label>
+                <div class="col-sm-10">
+                    <input type="file" class="form-control tc-darkgray file" id="_identityCardFrontPic"
+                           name="_identityCardFrontPic"
+                           placeholder="请选择身份证正面图片" accept="image/png,image/jpeg"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="_identityCardReversePic" class="col-sm-2 control-label">身份证反面</label>
+                <div class="col-sm-10">
+                    <input type="file" class="form-control tc-darkgray file" id="_identityCardReversePic"
+                           name="_identityCardReversePic"
+                           placeholder="请选择身份证反面图片" accept="image/png,image/jpeg"/>
+                </div>
+            </div>
+
+            <!-- <div class="form-group">
+                 <label for="licenseType" class="col-sm-2 control-label">执照类型</label>
+                 <div class="col-sm-10">
+                     <select id="licenseType" name="licenseType" class="form-control">
+                         <option class="tc-darkgray" value="">&#45;&#45;请选择营业执照类型</option>
+                         <option class="tc-darkgray" value="businessLicense">营业执照</option>
+                         <option class="tc-darkgray" value="integrateLicense">三证合一照</option>
+                     </select>
+                 </div>
+             </div>-->
+
+            <div class="form-group">
+                <label for="_licensePic" class="col-sm-2 control-label">许可证照片</label>
+                <div class="col-sm-10">
+                    <input type="file" class="form-control tc-darkgray file" id="_licensePic"
+                           name="_licensePic"
+                           placeholder="请选择营业许可证照片" accept="image/png,image/jpeg"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="_storeInteriorPic" class="col-sm-2 control-label">店铺内景</label>
+                <div class="col-sm-10">
+                    <input type="file" class="form-control tc-darkgray file" id="_storeInteriorPic"
+                           name="_storeInteriorPic"
+                           placeholder="请选择店铺内景照片" accept="image/png,image/jpeg"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="_storeSignBoardPic" class="col-sm-2 control-label">营业招牌</label>
+                <div class="col-sm-10">
+                    <input type="file" class="form-control tc-darkgray file" id="_storeSignBoardPic"
+                           name="_storeSignBoardPic"
+                           placeholder="请选择营业招牌照片" accept="image/png,image/jpeg"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <a id="checkform" class="btn btn-default">提交到翼支付重新审核</a>
+                </div>
+            </div>
+        </form>
     </div>
-    <form class="form-horizontal" role="form" id="merchant_info_form" style="margin: 0 auto" method="post"
-          action="update/busiqualificationinfo"
-          enctype="multipart/form-data">
-
-
-        <div class="form-group">
-            <label for="_identityCardFrontPic" class="col-sm-2 control-label">身份证正面</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control tc-darkgray" id="_identityCardFrontPic"
-                       name="_identityCardFrontPic"
-                       placeholder="请选择身份证正面图片" accept="image/png,image/jpeg"/>
-                <!--<input type="hidden" id="identityCardFrontPic"
-                       name="identityCardFrontPic"/>-->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="_identityCardReversePic" class="col-sm-2 control-label">身份证反面</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control tc-darkgray" id="_identityCardReversePic"
-                       name="_identityCardReversePic"
-                       placeholder="请选择身份证反面图片" accept="image/png,image/jpeg"/>
-                <!--<input type="hidden" id="identityCardReversePic"
-                       name="identityCardReversePic"/>-->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="licenseType" class="col-sm-2 control-label">执照类型</label>
-            <div class="col-sm-10">
-                <select id="licenseType" name="licenseType" class="form-control">
-                    <option class="tc-darkgray" value="">--请选择营业执照类型</option>
-                    <option class="tc-darkgray" value="businessLicense">营业执照</option>
-                    <option class="tc-darkgray" value="integrateLicense">三证合一照</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="_licensePic" class="col-sm-2 control-label">许可证照片</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control tc-darkgray" id="_licensePic"
-                       name="_licensePic"
-                       placeholder="请选择营业许可证照片" accept="image/png,image/jpeg"/>
-                <!--<input type="hidden" id="licensePic"
-                       name="licensePic"/>-->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="_storeInteriorPic" class="col-sm-2 control-label">店铺内景</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control tc-darkgray" id="_storeInteriorPic"
-                       name="_storeInteriorPic"
-                       placeholder="请选择店铺内景照片" accept="image/png,image/jpeg"/>
-                <!--<input type="hidden" id="storeInteriorPic"
-                       name="storeInteriorPic"/>-->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="_storeSignBoardPic" class="col-sm-2 control-label">营业招牌</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control tc-darkgray" id="_storeSignBoardPic"
-                       name="_storeSignBoardPic"
-                       placeholder="请选择营业招牌照片" accept="image/png,image/jpeg"/>
-                <!--<input type="hidden" id="storeSignBoardPic"
-                       name="storeSignBoardPic"/>-->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <a id="checkform" class="btn btn-default">提交到翼支付重新审核</a>
-            </div>
-        </div>
-    </form>
-</div>
 </body>
 <script>
+
     $(function () {
 
+        /**
+         * 营业许可证类型展示
+         * @type {string}
+         */
         var licenseType = "[[${merchantInfo.licenseType}]]";
-
         $("#licenseType").val(licenseType);
 
 
         $("#checkform").on("click", function () {
-
+            var chooseNum = 0;
             var submit = true;
+
+            $(".file").each(function () {
+
+                if ($(this).val() != "") {
+                    chooseNum += 1;
+                }
+            });
+
+
+            if (1 != chooseNum) {
+                submit = false;
+                alert("必须且只能提交一张照片");
+            }
 
             if (submit) {
                 $("#merchant_info_form").submit();
