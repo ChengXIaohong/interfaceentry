@@ -3,6 +3,7 @@ package com.interfaceentry.interfaceentry.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.interfaceentry.interfaceentry.dao.MccCodeDetailRespository;
 import com.interfaceentry.interfaceentry.dao.MccCodeRespository;
 import com.interfaceentry.interfaceentry.dao.MerchantRespository;
@@ -77,6 +78,10 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public List<MerchantEntity> getMerchantByStatus(String status) {
+        if ("ALL".equals(status)) {
+            Iterable<MerchantEntity> merchantEntityIterator =  merchantRespository.findAll();
+            return Lists.newArrayList(merchantEntityIterator);
+        }
         return merchantRespository.findBySubmissionStatusEquals(status);
     }
 
@@ -442,6 +447,12 @@ public class MerchantServiceImpl implements MerchantService {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
+    }
+
+    @Override
+    public Boolean reSubmitionBusiqualificationinfo(MerchantEntity merchantEntity) {
+
+        return null;
     }
 
     /**

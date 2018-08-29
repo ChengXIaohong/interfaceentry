@@ -114,7 +114,7 @@
      */
     function modifyRute(merchantId, modifyType) {
         if (merchantId && modifyType) {
-            this.location.href = "modify?merchantId=" + merchantId + "&modifyType=" + modifyType;
+            this.location.href = "update?merchantId=" + merchantId + "&modifyType=" + modifyType;
         } else {
             alert("非法参数");
         }

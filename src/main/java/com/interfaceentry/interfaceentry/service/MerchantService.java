@@ -73,4 +73,11 @@ public interface MerchantService {
      * @return
      */
     Boolean reSubmitionBaseInfo(MerchantEntity merchantEntity);
+
+    /**
+     * 修改商户资质资料
+     * @param merchantEntity
+     * @return
+     */
+    Boolean reSubmitionBusiqualificationinfo(MerchantEntity merchantEntity);
 }

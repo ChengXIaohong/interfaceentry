@@ -94,6 +94,14 @@
             <version>2.0.0-RC1</version>
         </dependency>
 
+        <!-- 引入guava -->
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>26.0-jre</version>
+        </dependency>
+
     </dependencies>
 
     <build>

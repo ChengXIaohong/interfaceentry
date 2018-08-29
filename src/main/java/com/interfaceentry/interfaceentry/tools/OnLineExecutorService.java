@@ -84,7 +84,7 @@ public class OnLineExecutorService {
                         } else if ("SIGNING".equals(signStatus) || "UNKONW".equals(signStatus)) {
                             cancel = false;
                         }
-                        //本次结果为未知或者签约中 继续下次轮询
+                        //本次结果为未知 继续下次轮询
                         if (cancel) {
                             OnLineExecutorService.getInstance().stopTackByRequestSeqId(requestSeqId);
                         }
